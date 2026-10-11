@@ -1,5 +1,16 @@
 # Comandos e controles da MixES
 
+## Console do CS2
+
+Copie os dois arquivos da pasta `cfg/` do repositório para `game/csgo/cfg` na instalação do seu cliente CS2.
+
+| Console | Resultado |
+| --- | --- |
+| `exec mixeson` | Ativa o modo transmissão: interface do CS2 limpa, mira e killfeed mantidos, radar nativo oculto |
+| `exec mixesoff` | Restaura a interface padrão do CS2 |
+
+[Guia de instalação e conteúdo das CFGs](../cfg/README.md).
+
 ## Durante a transmissão
 
 | Comando | Resultado |
@@ -15,7 +26,7 @@
 
 Se **Ocultar logo MixES** estiver marcado e salvo, Alt+L não consegue mostrar a logo. Desmarque a opção primeiro.
 
-Esses controles são atalhos do JTs e botões do painel. Não são comandos para digitar no console do CS2.
+Os controles desta tabela são atalhos do JTs e botões do painel. As CFGs acima são executadas no console do CS2. Para transmitir, execute `exec mixeson` no jogo e mantenha a MixES visível no JTs; para voltar à interface do jogo, execute `exec mixesoff` e oculte a camada externa com Alt+O.
 
 ## Manutenção do repositório
 

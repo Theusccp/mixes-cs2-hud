@@ -25,6 +25,22 @@ Se um atalho conflitar com outro programa, use **Mostrar HUD** e **Ocultar HUD**
 
 Depois de atualizar ou reabrir, a HUD volta visível. Detalhes em [docs/COMANDOS.md](docs/COMANDOS.md).
 
+## Limpar a interface do CS2 para transmitir
+
+Copie `cfg/mixeson.cfg` e `cfg/mixesoff.cfg` para a pasta `game/csgo/cfg` da instalação do seu **cliente CS2**. Depois use no console:
+
+```text
+exec mixeson
+```
+
+Isso limpa a interface padrão, mantém a mira e o killfeed e oculta o radar nativo. Para restaurar a interface do jogo:
+
+```text
+exec mixesoff
+```
+
+As CFGs ajustam o CS2; a camada MixES no OBS é controlada pelo JTs com **Alt+O**. As CFGs ficam fora do pacote de importação do JTs e devem ser copiadas separadamente. Instalação e detalhes em [cfg/README.md](cfg/README.md).
+
 ## Personalização
 
 Em **Panel > MixES — Personalização**, preencha os campos e salve.
