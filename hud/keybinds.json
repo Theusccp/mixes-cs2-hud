@@ -1,0 +1,10 @@
+[
+  {
+    "bind": "Alt+O",
+    "action": "toggleActive"
+  },
+  {
+    "bind": "Alt+L",
+    "action": "toggleMixESLogo"
+  }
+]

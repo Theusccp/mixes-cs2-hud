@@ -1,0 +1,106 @@
+[
+  {
+    "label": "MixES — Controles",
+    "name": "mixes",
+    "inputs": [
+      {
+        "type": "action",
+        "name": "mixes_controls",
+        "label": "Visibilidade da HUD",
+        "values": [
+          {
+            "name": "toggleActive",
+            "label": "Mostrar / ocultar HUD (Alt+O)"
+          },
+          {
+            "name": "showHud",
+            "label": "Mostrar HUD"
+          },
+          {
+            "name": "hideHud",
+            "label": "Ocultar HUD"
+          },
+          {
+            "name": "toggleMixESLogo",
+            "label": "Mostrar / ocultar logo (Alt+L)"
+          }
+        ]
+      },
+      {
+        "type": "action",
+        "name": "mixes_palette",
+        "label": "Cores dos lados",
+        "values": [
+          {
+            "name": "default_palette",
+            "label": "TR azul claro / CT rosa"
+          },
+          {
+            "name": "swap_palette",
+            "label": "TR rosa / CT azul claro"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "label": "MixES — Personalização",
+    "name": "mixes_settings",
+    "inputs": [
+      {
+        "type": "text",
+        "name": "t_color",
+        "label": "Cor TR (hexadecimal). Padrão: #65D4F5"
+      },
+      {
+        "type": "text",
+        "name": "ct_color",
+        "label": "Cor CT (hexadecimal). Padrão: #F51B95"
+      },
+      {
+        "type": "checkbox",
+        "name": "hide_logo",
+        "label": "Ocultar logo MixES"
+      },
+      {
+        "type": "text",
+        "name": "player_photo_scale",
+        "label": "Tamanho da foto lateral (%): 70 a 200. Padrão 100"
+      },
+      {
+        "type": "text",
+        "name": "observed_photo_scale",
+        "label": "Tamanho da foto central (%): 70 a 200. Padrão 100"
+      }
+    ]
+  },
+  {
+    "label": "Patrocinadores",
+    "name": "advertising",
+    "inputs": [
+      {
+        "type": "images",
+        "name": "advertising_image",
+        "label": "Selecione as imagens dos patrocinadores",
+        "accept": [
+          ".png"
+        ]
+      },
+      {
+        "type": "action",
+        "name": "advertising_state",
+        "values": [
+          {
+            "name": "advertising_toggle",
+            "label": "Mostrar / ocultar patrocinadores"
+          },
+          {
+            "name": "advertising_white_toggle",
+            "label": "Ativar / desativar modo branco"
+          }
+        ],
+        "label": "Exibição de patrocinadores"
+      }
+    ]
+  }
+]

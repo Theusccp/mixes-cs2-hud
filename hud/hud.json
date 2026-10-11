@@ -1,0 +1,13 @@
+{
+  "name": "MixES — Echo PT-BR",
+  "version": "1.0.2-mixes.3",
+  "author": "cshuds.com | Personalização MixES",
+  "legacy": false,
+  "radar": true,
+  "killfeed": false,
+  "game": "cs2",
+  "boltobserv": {
+    "css": false,
+    "maps": false
+  }
+}

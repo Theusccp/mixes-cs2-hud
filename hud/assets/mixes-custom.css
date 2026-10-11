@@ -1,0 +1,69 @@
+/* MixES: TR azul claro, CT rosa. Color meanings follow the side, not the team. */
+:root {
+  --color-t: #65D4F5;
+  --color-ct: #F51B95;
+  --color-t-variant: #176684;
+  --color-ct-variant: #80124E;
+  --color-t-op: rgba(101, 212, 245, .5);
+  --color-ct-op: rgba(245, 27, 149, .5);
+}
+/* Includes the original credit, which Echo can move outside #root. */
+html.mixes-hud-hidden body,
+html.mixes-hud-hidden body * { visibility: hidden !important; }
+#mixes-event-logo {
+  position: fixed;
+  left: 50%;
+  bottom: 205px;
+  transform: translateX(-50%);
+  width: 78px;
+  height: 78px;
+  object-fit: contain;
+  pointer-events: none;
+  user-select: none;
+  z-index: 200;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,.65));
+}
+#mixes-event-logo[hidden] { display: none; }
+.mixes-sponsors-white .sponsor_image { filter: brightness(0) invert(1); }
+/* PT-BR labels stay inside the existing Echo boxes. */
+.matchbar .matchbar-display .mdm-round { font-size: 8px; }
+.matchbar-stats .ms-content .ms-loss .title,
+.matchbar-stats .ms-content .ms-money .title {
+  top: 4px;
+  font-size: 7px;
+  line-height: 8px;
+  height: 16px;
+  white-space: pre-line;
+  overflow-wrap: normal;
+}
+.matchbar-stats .ms-content .ms-loss .title { width: 78px; }
+.matchbar-stats .ms-content .ms-money .title { width: 86px; }
+.matchbar-stats .ms-content .ms-loss.right .title,
+.matchbar-stats .ms-content .ms-money.right .title { text-align: right; }
+.matchbar-stats .ms-content .ms-loss .value,
+.matchbar-stats .ms-content .ms-money .value {
+  bottom: 3px;
+  font-size: 36px;
+  line-height: 36px;
+}
+.matchbar-stats .ms-content .ms-loss .value span,
+.matchbar-stats .ms-content .ms-money .value span { font-size: 25px; }
+.matchbar-win .mw-text .desc { font-size: 12px; line-height: 16px; }
+.mvp .mvp-content .mvp-title { font-size: 39px; }
+.mvp .mvp-content .mvp-stats .mvp-stat .title { font-size: 8px; }
+.scoreboard .sb-label .sbl-kills { right: 133px; }
+/* Operator-supplied portraits: centered, without the stock model enlargement. */
+.player-container .player-frame .player-avatar img.mixes-player-photo {
+  height: var(--mixes-player-photo-scale, 100%);
+  width: auto;
+  max-width: none;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+.observed .observed-content .observed-avatar img.mixes-player-photo {
+  width: var(--mixes-observed-photo-scale, 100%);
+  height: auto;
+  max-width: none;
+  object-fit: contain;
+  flex-shrink: 0;
+}

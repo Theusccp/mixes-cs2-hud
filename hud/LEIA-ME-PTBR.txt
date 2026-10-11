@@ -1,0 +1,83 @@
+MixES — Echo HUD PT-BR
+Base: Echo HUD 1.0.2, de cshuds.com.
+Personalização: cores MixES, textos PT-BR, logo fornecida pelo usuário e controles.
+
+INSTALAÇÃO NO JTs HUD MANAGER
+1. Feche a HUD Echo que está aberta no JTs.
+2. Entre em HUDs > Import HUD e selecione este ZIP, sem descompactar.
+3. Procure "MixES — Echo PT-BR" e clique em Launch.
+4. Copie a URL da nova HUD com Copy URL.
+5. No OBS, abra as propriedades da fonte Navegador e substitua a URL antiga
+   pela URL da MixES. Use largura 1920 e altura 1080.
+6. Abra Panel na HUD MixES para acessar os controles em português.
+
+ATALHOS
+Alt+O = mostrar / ocultar toda a HUD (incluindo logo e crédito original).
+Alt+L = mostrar / ocultar somente a logo MixES.
+Alt+F = atualizar a HUD; atalho global do JTs, sem alteração.
+O JTs deve continuar aberto e a HUD MixES deve estar iniciada.
+Os atalhos de radar do JTs padrão não foram adicionados ao Echo.
+
+PAINEL
+MixES — Controles: mostrar, ocultar, alternar HUD, alternar logo e presets.
+MixES — Personalização: cores HEX de TR/CT e opção de ocultar logo.
+Patrocinadores: controles originais traduzidos, incluindo modo branco.
+Os botões de mostrar/ocultar funcionam pelo painel sem foco na fonte do OBS.
+
+CORES
+Padrão conforme o pedido: TR azul claro #65D4F5; CT rosa #F51B95.
+O painel também oferece TR rosa / CT azul claro.
+As cores acompanham os lados TR/CT ao trocar o lado dos times.
+Campos HEX vazios usam o preset; informe #RRGGBB para personalizar e salve.
+Botões de preset substituem cores personalizadas temporariamente.
+Para manter cores após atualizar/reabrir a HUD, use os campos HEX e salve.
+A HUD volta visível depois de Alt+F ou de uma nova abertura.
+
+LOGO
+Foi usada a imagem MIX ES enviada pelo usuário, com fundo transparente.
+Arquivo: assets/mixes-logo.png.
+A logo pode ser usada separadamente no OBS depois de descompactar este ZIP.
+
+TEXTOS
+Rodada, PR (prorrogação), pausa tática, plantando/desarmando a bomba,
+venceu a rodada, dinheiro da equipe, bônus de derrota, nomes, abates,
+mortes, dano, destaque da rodada, mapa decisivo e painel traduzidos.
+Nomes dos jogadores, times, armas e mapas mantêm os dados originais.
+Crédito de cshuds.com preservado.
+
+SE O ATALHO NÃO RESPONDER
+Feche a HUD anterior antes de iniciar a MixES. Se outro programa estiver
+usando Alt+O, use os botões Mostrar / Ocultar no painel.
+Se preferir outro atalho, edite keybinds.json e reimporte o pacote.
+Feche e abra a HUD para o JTs registrar a nova combinação.
+
+REFERÊNCIA DO GERENCIADOR
+https://github.com/JohnTimmermann/JTs-Hud
+O keybinds.json usa objetos {"bind":"Alt+O","action":"toggleActive"}.
+O JTs envia keybindAction; o Echo agora implementa o tratamento da ação.
+
+ARQUIVOS EDITÁVEIS
+assets/mixes-custom.js: controles e aplicação das cores.
+assets/mixes-custom.css: estilos e posição/tamanho da logo.
+panel.json: textos e botões do painel.
+keybinds.json: combinações de teclas.
+O ZIP mantém hud.json na raiz para importação direta.
+
+VALIDAÇÃO
+Sintaxe dos módulos JavaScript e JSON validada.
+Lógica de mostrar/ocultar, logo, presets, cores HEX e ações do painel testada.
+Não foi possível validar a aparência em um navegador neste ambiente.
+O teste em partida real no Windows/CS2/OBS deve ser feito após importar.
+
+AJUSTE VISUAL V2
+Logo reduzida de 116 para 78 px e elevada 60 px.
+Legendas da economia em duas linhas com largura limitada.
+Valores da economia ajustados para liberar espaço para as legendas.
+
+AJUSTE DE FOTOS V3
+Fotos cadastradas pelos jogadores deixam de usar o zoom dos bonecos padrão.
+Cartões laterais: altura padrão 100% (antes 200%).
+Jogador observado no centro: largura padrão 100% (antes 150%).
+Em Panel > MixES — Personalização, ajuste os tamanhos de 70 a 200 e salve.
+Campos vazios usam 100. Valores inválidos também usam 100.
+As imagens padrão de TR/CT continuam com o tamanho original.
