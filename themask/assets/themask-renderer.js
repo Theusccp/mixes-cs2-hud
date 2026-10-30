@@ -1,5 +1,7 @@
 import { safeImage } from './themask-state.js';
+import { createRadar } from './themask-radar.js';
 export function createRenderer(options = {}) {
+  const radar=createRadar();
   let lastState = null;
   const failedImages = new Set();
   const $ = (s, el = document) => el.querySelector(s);
@@ -121,6 +123,7 @@ export function createRenderer(options = {}) {
     txt(dbg, !s.ok ? 'HUD: ' + (s.reason || 'sem sinal') : DEMO ? 'HUD: demonstração' : 'HUD: ao vivo');
     if (!s.ok) return;
     const L = s.left, R = s.right;
+    radar.render(s);
     logo($('#lgL'), L); logo($('#lgR'), R);
     side($('#scL'), L.side); side($('#scR'), R.side);
     txt($('#scL b'), L.score); txt($('#scR b'), R.score);

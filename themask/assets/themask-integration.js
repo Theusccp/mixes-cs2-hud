@@ -31,6 +31,9 @@ export function installTheMask({game, actions, config, api, socket, apiBase}) {
     document.documentElement.style.setProperty('--photo-scale', String((scale >= 70 && scale <= 160 ? scale : 100)/100));
     document.documentElement.classList.toggle('contain-portraits', settings.contain_photos === true);
     document.documentElement.classList.toggle('hide-alive', settings.hide_alive === true);
+    document.documentElement.classList.toggle('hide-radar', settings.hide_radar === true);
+    const radarSize=Number(settings.radar_size);
+    document.documentElement.style.setProperty('--radar-size',`${radarSize>=240&&radarSize<=420?radarSize:320}px`);
     rerender();
   }
   const show = value => { visible = value; stage.hidden = !visible; document.querySelector('#hud-credit').hidden = !visible; };

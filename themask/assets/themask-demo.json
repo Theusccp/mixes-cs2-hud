@@ -51,7 +51,17 @@
         ],
         "bomb": false,
         "taser": false,
-        "observed": false
+        "observed": false,
+        "position": [
+          -1900,
+          -2100,
+          0
+        ],
+        "forward": [
+          1,
+          0,
+          0
+        ]
       },
       {
         "id": "76561198701316071",
@@ -85,7 +95,17 @@
         ],
         "bomb": false,
         "taser": false,
-        "observed": false
+        "observed": false,
+        "position": [
+          -1400,
+          -1600,
+          0
+        ],
+        "forward": [
+          1,
+          0,
+          0
+        ]
       },
       {
         "id": "76561199078242188",
@@ -119,7 +139,17 @@
         ],
         "bomb": false,
         "taser": false,
-        "observed": false
+        "observed": false,
+        "position": [
+          -1600,
+          -600,
+          0
+        ],
+        "forward": [
+          1,
+          0,
+          0
+        ]
       },
       {
         "id": "76561198789305250",
@@ -154,7 +184,17 @@
         ],
         "bomb": false,
         "taser": false,
-        "observed": true
+        "observed": true,
+        "position": [
+          -400,
+          -1200,
+          0
+        ],
+        "forward": [
+          1,
+          0,
+          0
+        ]
       },
       {
         "id": "76561199047596580",
@@ -188,7 +228,17 @@
         ],
         "bomb": false,
         "taser": false,
-        "observed": false
+        "observed": false,
+        "position": [
+          -600,
+          -700,
+          0
+        ],
+        "forward": [
+          1,
+          0,
+          0
+        ]
       }
     ]
   },
@@ -233,7 +283,17 @@
         ],
         "bomb": false,
         "taser": false,
-        "observed": false
+        "observed": false,
+        "position": [
+          1400,
+          200,
+          0
+        ],
+        "forward": [
+          -1,
+          0,
+          0
+        ]
       },
       {
         "id": "76561198329474174",
@@ -267,7 +327,17 @@
         ],
         "bomb": false,
         "taser": false,
-        "observed": false
+        "observed": false,
+        "position": [
+          1000,
+          700,
+          0
+        ],
+        "forward": [
+          -1,
+          0,
+          0
+        ]
       },
       {
         "id": "76561198777728168",
@@ -302,7 +372,17 @@
         ],
         "bomb": true,
         "taser": false,
-        "observed": false
+        "observed": false,
+        "position": [
+          500,
+          -200,
+          0
+        ],
+        "forward": [
+          -1,
+          0,
+          0
+        ]
       },
       {
         "id": "76561199474125968",
@@ -336,7 +416,17 @@
         ],
         "bomb": false,
         "taser": false,
-        "observed": false
+        "observed": false,
+        "position": [
+          300,
+          700,
+          0
+        ],
+        "forward": [
+          -1,
+          0,
+          0
+        ]
       },
       {
         "id": "76561199817762860",
@@ -370,7 +460,17 @@
         ],
         "bomb": false,
         "taser": false,
-        "observed": false
+        "observed": false,
+        "position": [
+          700,
+          -1200,
+          0
+        ],
+        "forward": [
+          -1,
+          0,
+          0
+        ]
       }
     ]
   },
@@ -413,8 +513,40 @@
     ],
     "bomb": false,
     "taser": false,
-    "observed": true
+    "observed": true,
+    "position": [
+      -400,
+      -1200,
+      0
+    ],
+    "forward": [
+      1,
+      0,
+      0
+    ]
   },
   "action_total": 40,
-  "action_left": 27.4
+  "action_left": 27.4,
+  "radar": {
+    "map": "de_mirage",
+    "bomb": {
+      "state": "planted",
+      "position": [
+        500,
+        -200,
+        0
+      ]
+    },
+    "grenades": [
+      {
+        "type": "smoke",
+        "effecttime": 3,
+        "position": [
+          -200,
+          -600,
+          0
+        ]
+      }
+    ]
+  }
 }

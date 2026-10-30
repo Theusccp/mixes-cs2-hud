@@ -11,6 +11,21 @@ export function safeImage(value, base) {
   } catch { return ''; }
 }
 
+export function playerPhoto(value,base){
+  const url=safeImage(value,base);if(!url)return '';
+  if(url.startsWith('data:'))return url;
+  const parsed=new URL(url);
+  if(/(^|\.)steamstatic\.com$/i.test(parsed.hostname))
+    parsed.pathname=parsed.pathname.replace(/\/([a-f0-9]{40})(?:_medium|_small)?\.(jpg|png)$/i,'/$1_full.$2');
+  return parsed.href;
+}
+
+export function teamLabel(name,side){
+  const label=side==='CT'?'CT':'TR';
+  const normalized=String(name||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').trim().toLowerCase();
+  return !normalized||/^(contra[- ]terroristas?|counter[- ]terrorists?|terroristas?|terrorists?|ct|tr|t)$/.test(normalized)?label:String(name);
+}
+
 export function weaponName(value) {
   const raw = String(value || '').replace(/^weapon_/, '');
   const names = { m4a1_silencer: 'M4A1-S', m4a1: 'M4A4', usp_silencer: 'USP-S',
@@ -40,7 +55,9 @@ export function normalizeJTs(data, match = null, settings = {}, apiBase) {
     }
     return {
       id: String(p.steamid), name: String(p.name || p.defaultName || 'Jogador'),
-      avatar: safeImage(p.avatar, apiBase), slot: finite(p.observer_slot, 0), side: p.team?.side || 'CT',
+      avatar: playerPhoto(p.avatar, apiBase), slot: finite(p.observer_slot, 0), side: p.team?.side || 'CT',
+      position:Array.isArray(p.position)?p.position.map(Number):null,
+      forward:Array.isArray(p.forward)?p.forward.map(Number):null,
       hp: clamp(p.state?.health, 0, 100), armor: clamp(p.state?.armor, 0, 100),
       kit: Boolean(p.state?.defusekit), helmet: Boolean(p.state?.helmet),
       money: Math.max(0, finite(p.state?.money)), kills: finite(p.stats?.kills),
@@ -54,7 +71,7 @@ export function normalizeJTs(data, match = null, settings = {}, apiBase) {
     };
   };
   const all = data.players.map(player);
-  const team = t => ({side:t.side, name:String(t.name || t.side), tag:t.shortName || '',
+  const team = t => ({side:t.side, name:teamLabel(t.name,t.side), tag:t.shortName || '',
     score:finite(t.score), logo:safeImage(t.logo, apiBase),
     players:all.filter(p => p.side === t.side).sort((a,b) => (a.slot || 10) - (b.slot || 10))});
   let phase = data.phase_countdowns?.phase || data.round?.phase || 'live';
@@ -76,6 +93,8 @@ export function normalizeJTs(data, match = null, settings = {}, apiBase) {
       : data.bomb?.state === 'planting' ? 3 : 40,
     win_team:data.round?.win_team || '', left:team(left), right:team(right),
     observed:all.find(p => p.observed) || null,
+    radar:{map:String(data.map.name||'').split('/').pop(),bomb:data.bomb,
+      grenades:(Array.isArray(data.grenades)?data.grenades:[]).filter(g=>g.type==='smoke')},
     series:{best_of:bestOf, maps:maps.map(v => ({name:String(v.mapName || '').replace(/^de_/, '').toUpperCase(),
       status:v.mapEnd ? 'done' : String(v.mapName) === String(data.map.name) ? 'live' : '',
       winner:v.winner || '', a:Object.values(v.score || {})[0] ?? 0, b:Object.values(v.score || {})[1] ?? 0})),

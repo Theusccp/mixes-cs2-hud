@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
 const source=await readFile(new URL('../themask/assets/themask-state.js',import.meta.url),'utf8');
-const {normalizeJTs,safeImage}=await import('data:text/javascript;base64,'+Buffer.from(source).toString('base64'));
+const {normalizeJTs,safeImage,playerPhoto,teamLabel}=await import('data:text/javascript;base64,'+Buffer.from(source).toString('base64'));
 function fixture(){
   const ct={side:'CT',orientation:'left',score:9,name:'COBRA',matches_won_this_series:1};
   const tr={side:'T',orientation:'right',score:8,name:'LOBO',matches_won_this_series:0};
@@ -38,4 +38,32 @@ test('ausência de dados não produz placar fictício; normaliza melhor de e URL
   assert.equal(safeImage('javascript:alert(1)'), '');
   assert.equal(safeImage('data:text/html,<script>'), '');
   assert.equal(safeImage('data:image/png;base64,YQ=='),'data:image/png;base64,YQ==');
+});
+
+test('nomes padrão viram CT/TR e equipes cadastradas mantêm seus nomes',()=>{
+  assert.equal(teamLabel('Contra-Terroristas','CT'),'CT');
+  assert.equal(teamLabel('Terroristas','T'),'TR');
+  assert.equal(teamLabel('Counter-Terrorists','CT'),'CT');
+  assert.equal(teamLabel('TheMask Academy','CT'),'TheMask Academy');
+  const data=fixture();data.map.team_ct.name='Contra-Terroristas';data.map.team_t.name='Terroristas';
+  const state=normalizeJTs(data);assert.equal(state.left.name,'CT');assert.equal(state.right.name,'TR');
+});
+
+test('avatar Steam usa resolução full e retrato personalizado preserva o arquivo original',()=>{
+  const hash='a'.repeat(40);
+  assert.equal(playerPhoto(`https://avatars.steamstatic.com/${hash}_medium.jpg`),`https://avatars.steamstatic.com/${hash}_full.jpg`);
+  const custom='http://localhost:1349/api/players/photo.png?original=1';
+  assert.equal(playerPhoto(custom),custom);
+});
+
+const radarSource=await readFile(new URL('../themask/assets/themask-radar.js',import.meta.url),'utf8');
+const {project}=await import('data:text/javascript;base64,'+Buffer.from(radarSource).toString('base64'));
+const maps=JSON.parse(await readFile(new URL('../themask/assets/themask-radar-maps.json',import.meta.url),'utf8'));
+test('radar projeta coordenadas negativas, rejeita dados ausentes e separa andares de Nuke',()=>{
+  const point=project([-200,-2100,0],maps.de_mirage);
+  assert.ok(point.x>600&&point.x<610);assert.ok(point.y>760&&point.y<770);
+  assert.equal(project(null,maps.de_mirage),null);
+  assert.equal(project([NaN,1,0],maps.de_mirage),null);
+  assert.equal(project([0,0,-450],maps.de_nuke).level,'high');
+  assert.equal(project([0,0,-451],maps.de_nuke).level,'low');
 });

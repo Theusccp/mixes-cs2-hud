@@ -1,9 +1,9 @@
 {
   "name": "The Mask Cup — Broadcast",
-  "version": "1.0.0-themask",
+  "version": "1.1.0-themask",
   "author": "The Mask Cup | Integração baseada em Echo/cshuds.com",
   "legacy": false,
-  "radar": false,
+  "radar": true,
   "killfeed": false,
   "game": "cs2",
   "boltobserv": { "css": false, "maps": false }

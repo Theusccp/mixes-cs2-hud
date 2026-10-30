@@ -147,7 +147,8 @@ body { font-family: 'Oswald', sans-serif; color: #fff; -webkit-font-smoothing: a
 /* Local broadcast controls and image sizing. */
 [hidden] { display: none !important; }
 :root { --photo-scale: 1; }
-.pc-av img, .ob-av img { object-position: center; transform: scale(var(--photo-scale)); }
+.pc-av, .ob-av { display: grid; place-items: center; overflow: hidden; }
+.pc-av img, .ob-av img { object-position: center; transform: none; width: calc(100% * var(--photo-scale)); height: calc(100% * var(--photo-scale)); image-rendering: auto; }
 .contain-portraits .pc-av img, .contain-portraits .ob-av img { object-fit: contain; }
 .hide-themask-logo #series img { display: none; }
 .hide-themask-logo #series { padding-left: 14px; }
@@ -164,3 +165,35 @@ body { font-family: 'Oswald', sans-serif; color: #fff; -webkit-font-smoothing: a
 #series { max-width: 600px; overflow: hidden; }
 #series .bo { max-width: 380px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 #series img, #series .mp { flex-shrink: 0; }
+
+/* Broadcast-only layer: the live overlay has no clickable controls or cursor. */
+body:not(.demo-mode), body:not(.demo-mode) #stage, body:not(.demo-mode) #stage * { pointer-events: none; user-select: none; cursor: none; }
+.hud-live, .hud-live * { pointer-events: none; user-select: none; cursor: none; }
+#tL { left: 24px; } #tR { right: 24px; }
+
+/* Radar reuses the existing Echo overview calibration and local map textures. */
+:root { --radar-size: 320px; }
+#themask-radar { position: absolute; top: 72px; left: 18px; width: var(--radar-size); background: rgba(7,11,16,.88); border: 1px solid #d9a94c70; box-shadow: 0 8px 24px #0005; clip-path: polygon(0 0, calc(100% - 14px) 0, 100% 14px, 100% 100%, 0 100%); }
+#themask-radar header { display: flex; align-items: center; gap: 7px; height: 34px; padding: 0 9px; border-bottom: 1px solid #d9a94c50; background: #11171e; }
+#themask-radar header img { width: 24px; height: 24px; }
+#themask-radar strong { font: 700 13px 'Oswald',sans-serif; letter-spacing: 1px; }
+#themask-radar .radar-title { color: var(--gold-hi); margin-left: 5px; }
+#themask-radar .radar-note { margin-left: auto; font: 700 11px 'Rajdhani',sans-serif; color: #c8ced6; }
+#themask-radar > svg { display: block; width: 100%; aspect-ratio: 1; background: #101820; }
+#themask-radar svg > image { opacity: .93; }
+#themask-radar footer { height: 24px; display: flex; align-items: center; gap: 5px; padding: 0 10px; border-top: 1px solid #ffffff14; font: 700 11px 'Rajdhani',sans-serif; color: #e9edf1; letter-spacing: .5px; }
+#themask-radar footer span { color: var(--gold-hi); margin-left: auto; }
+#themask-radar footer i { width: 7px; height: 7px; border-radius: 50%; }
+#themask-radar .legend-ct { background: var(--ct); } #themask-radar .legend-t { background: var(--t); margin-left: 10px; }
+.radar-player.CT { --dot: var(--ct); } .radar-player.T { --dot: var(--t); }
+.radar-dot { fill: var(--dot); stroke: #081018; stroke-width: 6; }
+.radar-heading { fill: var(--dot); stroke: #081018; stroke-width: 3; }
+.radar-slot { font: 700 39px 'Rajdhani',sans-serif; fill: #071018; }
+.radar-observed { fill: none; stroke: white; stroke-width: 7; }
+.radar-dead { stroke: var(--dot); stroke-width: 9; opacity: .5; }
+.radar-carrier { fill: #ffeb92; stroke: #081018; stroke-width: 3; }
+.radar-bomb rect { fill: #ed4b42; stroke: #fff0d0; stroke-width: 4; }
+.radar-bomb text { fill: white; font: 700 27px 'Oswald',sans-serif; }
+.radar-smoke { fill: #d8e0e54a; stroke: #f2f5f9aa; stroke-width: 3; }
+.hide-radar #themask-radar { display: none; }
+.radar-unavailable > svg { opacity: .2; }

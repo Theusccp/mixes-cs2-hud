@@ -7,13 +7,14 @@ import zipfile
 
 ROOT = Path(__file__).resolve().parents[1]
 HUD = ROOT / 'themask'
-OUTPUT = ROOT / 'dist' / 'TheMask-HUD-v1.zip'
+OUTPUT = ROOT / 'dist' / 'TheMask-HUD-v1.1.zip'
 
 def main():
     for name in ['hud.json','panel.json','keybinds.json','index.html','thumb.png',
                  'assets/themask-engine.js','assets/themask-integration.js',
                  'assets/themask-renderer.js','assets/themask-state.js',
-                 'assets/themask-logo-256.webp','assets/themask-fonts.css']:
+                 'assets/themask-logo-256.webp','assets/themask-fonts.css',
+                 'assets/themask-radar.js','assets/themask-radar-maps.json']:
         if not (HUD/name).is_file():
             raise SystemExit('Arquivo ausente: '+name)
     for path in HUD.rglob('*.json'):
