@@ -82,7 +82,7 @@ body { font-family: 'Oswald', sans-serif; color: #fff; -webkit-font-smoothing: a
 /* ── Cards dos jogadores ─────────────────────────── */
 .team { position: absolute; bottom: 18px; display: flex; gap: 5px; align-items: flex-end; }
 #tL { left: 18px; } #tR { right: 18px; }
-.pc { position: relative; width: 144px; height: 98px; }
+.pc { position: relative; width: 144px; height: 102px; }
 .pc-box { position: absolute; inset: 0; background: var(--bg); clip-path: polygon(0 0, calc(100% - 14px) 0, 100% 14px, 100% 100%, 0 100%); }
 #tR .pc-box { clip-path: polygon(14px 0, 100% 0, 100% 100%, 0 100%, 0 14px); }
 .pc-box::before { content: ''; position: absolute; left: 0; top: 0; right: 0; height: 2px; background: linear-gradient(90deg, var(--sc), transparent); }
@@ -103,15 +103,16 @@ body { font-family: 'Oswald', sans-serif; color: #fff; -webkit-font-smoothing: a
 .pc-row2 { position: absolute; left: 8px; right: 8px; top: 58px; display: flex; align-items: center; gap: 8px; font-family: 'Rajdhani', sans-serif; font-size: 15px; font-weight: 700; }
 .pc-row2 .k::before { content: 'K '; color: var(--sc); } .pc-row2 .d::before { content: 'D '; color: var(--sc); }
 .pc-money { margin-left: auto; color: var(--money); }
-.pc-strip { position: absolute; left: 0; right: 0; bottom: 0; height: 18px; background: rgba(255,255,255,.06); overflow: hidden; }
+.pc-strip { position: absolute; left: 0; right: 0; bottom: 0; height: 22px; background: rgba(255,255,255,.06); overflow: hidden; }
 .pc-strip .fill { position: absolute; left: 0; top: 0; bottom: 0; background: linear-gradient(90deg, var(--s2), var(--sc)); transition: width .35s ease; }
 #tR .pc-strip .fill { left: auto; right: 0; background: linear-gradient(270deg, var(--s2), var(--sc)); }
 .pc-strip .fill.low { background: linear-gradient(90deg, #7A1712, var(--red)); }
 .pc-strip .in { position: absolute; inset: 0; padding: 0 8px; display: flex; align-items: center; gap: 5px; font-family: 'Rajdhani', sans-serif; font-size: 13px; font-weight: 700; letter-spacing: .5px; text-transform: uppercase; text-shadow: 0 1px 2px rgba(0,0,0,.7); }
 .pc-strip .gun { flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.pc-strip .nds { display: flex; gap: 5px; }
-.nd { width: 7px; height: 7px; transform: rotate(45deg); background: #fff; flex-shrink: 0; }
-.nd.he { background: #FF6B5E; } .nd.smoke { background: #C2C8D0; } .nd.fire { background: #FFA040; } .nd.decoy { background: #8C949E; }
+.pc-strip .nds { display: flex; align-items: center; gap: 2px; flex-shrink: 0; }
+.nd { display: grid; place-items: center; width: 16px; height: 19px; background: rgba(8,13,19,.92); flex-shrink: 0; clip-path: polygon(50% 0,100% 25%,100% 75%,50% 100%,0 75%,0 25%); }
+.nd svg { width: 13px; height: 15px; fill: none; stroke: currentColor; stroke-width: 1.9; stroke-linejoin: round; stroke-linecap: round; }
+.nd.he { color: #FF8D82; } .nd.smoke { color: #E5EBF1; } .nd.flash { color: #FFF1A6; } .nd.fire { color: #FFB05B; } .nd.decoy { color: #A6D9ED; }
 .pc-dead { position: absolute; left: 34px; right: 8px; top: 9px; display: none; flex-direction: column; gap: 3px; }
 #tR .pc-dead { left: 8px; right: 34px; }
 .pc-dead b { font-size: 18px; font-weight: 600; line-height: 1.05; color: rgba(255,255,255,.75); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -173,15 +174,15 @@ body:not(.demo-mode), body:not(.demo-mode) #stage, body:not(.demo-mode) #stage *
 
 /* Radar reuses the existing Echo overview calibration and local map textures. */
 :root { --radar-size: 320px; }
-#themask-radar { position: absolute; top: 72px; left: 18px; width: var(--radar-size); background: rgba(7,11,16,.88); border: 1px solid #d9a94c70; box-shadow: 0 8px 24px #0005; clip-path: polygon(0 0, calc(100% - 14px) 0, 100% 14px, 100% 100%, 0 100%); }
-#themask-radar header { display: flex; align-items: center; gap: 7px; height: 34px; padding: 0 9px; border-bottom: 1px solid #d9a94c50; background: #11171e; }
-#themask-radar header img { width: 24px; height: 24px; }
-#themask-radar strong { font: 700 13px 'Oswald',sans-serif; letter-spacing: 1px; }
-#themask-radar .radar-title { color: var(--gold-hi); margin-left: 5px; }
+#themask-radar { position: absolute; top: 72px; left: 18px; width: var(--radar-size); background: transparent; }
+#themask-radar header { display: flex; align-items: center; gap: 7px; height: 22px; padding: 0 4px; background: transparent; text-shadow: 0 1px 3px #000,0 0 5px #000; }
+#themask-radar header img { display: none; }
+#themask-radar strong { font-size: 0; }
+#themask-radar .radar-title { font: 700 12px 'Oswald',sans-serif; letter-spacing: 1px; color: var(--gold-hi); }
 #themask-radar .radar-note { margin-left: auto; font: 700 11px 'Rajdhani',sans-serif; color: #c8ced6; }
-#themask-radar > svg { display: block; width: 100%; aspect-ratio: 1; background: #101820; }
-#themask-radar svg > image { opacity: .93; }
-#themask-radar footer { height: 24px; display: flex; align-items: center; gap: 5px; padding: 0 10px; border-top: 1px solid #ffffff14; font: 700 11px 'Rajdhani',sans-serif; color: #e9edf1; letter-spacing: .5px; }
+#themask-radar > svg { display: block; width: 100%; aspect-ratio: 1; background: transparent; }
+#themask-radar svg > image { opacity: .84; }
+#themask-radar footer { display: none; }
 #themask-radar footer span { color: var(--gold-hi); margin-left: auto; }
 #themask-radar footer i { width: 7px; height: 7px; border-radius: 50%; }
 #themask-radar .legend-ct { background: var(--ct); } #themask-radar .legend-t { background: var(--t); margin-left: 10px; }

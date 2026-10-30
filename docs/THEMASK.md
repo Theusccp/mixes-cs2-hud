@@ -5,7 +5,7 @@ Variante independente da MixES, baseada na referência visual fornecida pelo usu
 ## Instalar no JTs e OBS
 
 1. Gere o pacote em Windows com `py -3 scripts/package-themask.py` ou, em Linux/macOS, com `python3 scripts/package-themask.py`.
-2. No JTs, importe `dist/TheMask-HUD-v1.1.zip`, sem descompactar.
+2. No JTs, importe `dist/TheMask-HUD-v1.2.zip`, sem descompactar.
 3. Inicie **The Mask Cup — Broadcast**. Cadastre times, logos, jogadores e fotos no gerenciador como na Echo/MixES.
 4. Copie a URL para uma fonte Navegador do OBS, em **1920 × 1080**.
 5. Abra o painel da HUD no JTs para configurar nome do campeonato, cores, melhor de, tamanho e encaixe das fotos.
@@ -26,9 +26,11 @@ A prévia tem botões para bomba, rodada ao vivo, compra, pausa, desarme, vitór
 
 Esta variante usa o killfeed nativo e inclui radar próprio TheMask. O layout compacto de referência pode ser usado com `themask/cfg/themaskon.cfg`, que oculta também o radar nativo. Para restaurar, use `themask/cfg/themaskoff.cfg`. Copie esses dois arquivos para `game/csgo/cfg` do cliente CS2 e execute `exec themaskon` ou `exec themaskoff` no console. Os atalhos do JTs controlam a camada externa; as CFGs controlam o jogo.
 
-## Radar, fotos e mouse (v1.1)
+## Radar, inventário, fotos e mouse (v1.2)
 
 O radar usa as imagens e calibrações já presentes na base Echo para Mirage, Dust2, Inferno, Nuke, Train, Overpass, Ancient, Anubis, Vertigo e Cache. Mostra os slots dos jogadores, orientação, assistido, mortos, C4 e fumaças. Nuke e Vertigo usam as regras de andar da calibração original. Mapas desconhecidos exibem um aviso em vez de posições sobre uma imagem errada. Assets de mapa e calibração devem ser atualizados juntos quando um mapa do CS2 mudar.
+
+O radar tem fundo transparente, sem painel escuro, borda ou rodapé. Apenas o mapa, os marcadores e um cabeçalho discreto ficam sobre o jogo. O inventário mantém os hexágonos e exibe silhuetas vetoriais para HE, flashbang, smoke, molotov/incendiária e decoy. Duas flashes aparecem como dois ícones.
 
 O painel permite ajustar o radar de 240 a 420 px (padrão 320) ou ocultá-lo. As cores acompanham CT/TR. Nomes genéricos Contra-Terroristas/Terroristas aparecem como CT/TR; nomes de equipes cadastradas são preservados.
 

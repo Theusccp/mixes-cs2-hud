@@ -1,5 +1,6 @@
 import { safeImage } from './themask-state.js';
 import { createRadar } from './themask-radar.js';
+import { grenadeBadge } from './themask-grenades.js';
 export function createRenderer(options = {}) {
   const radar=createRadar();
   let lastState = null;
@@ -69,7 +70,7 @@ export function createRenderer(options = {}) {
       txt($('.k', el), p.kills); txt($('.d', el), p.deaths); txt($('.pc-money', el), '$' + p.money);
       const fill = $('.fill', el); fill.style.width = p.hp + '%'; fill.classList.toggle('low', p.hp > 0 && p.hp <= 25);
       txt($('.gun', el), p.weapon || p.secondary || 'Faca');
-      html($('.nds', el), p.nades.map((n) => `<i class="nd ${n}"></i>`).join(''));
+      html($('.nds', el), p.nades.map(grenadeBadge).join(''));
       const tag = $('.pc-tag', el);
       tag.className = 'pc-tag' + (p.bomb ? ' bomb' : p.kit ? ' kit' : ''); txt(tag, p.bomb ? 'C4' : p.kit ? 'KIT' : '');
       html($('.pc-rk', el), '<i></i>'.repeat(Math.min(p.round_kills || 0, 5)));
