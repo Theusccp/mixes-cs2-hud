@@ -1,0 +1,38 @@
+THE MASK CUP — BROADCAST HUD 1.0.0
+
+INSTALAÇÃO NO JTs
+1. Importe TheMask-HUD-v1.zip em HUDs > Import HUD, sem descompactar.
+2. Inicie The Mask Cup — Broadcast.
+3. Copie a URL para uma fonte Navegador do OBS, em 1920 x 1080.
+4. Cadastre jogadores, fotos e times no JTs. Os dados vêm da mesma integração GSI usada pela Echo.
+5. Abra Panel para nome do campeonato, cores, fotos e visibilidade.
+
+ATALHOS
+Alt+O: mostrar/ocultar a HUD.
+Alt+L: mostrar/ocultar a logo do evento.
+Alt+F: atualização global do JTs.
+
+PRÉVIA
+Abra a URL da HUD com &demo=1 (ou ?demo=1 se não houver parâmetros).
+A demonstração usa arquivos locais e não faz conexão com o JTs.
+Os botões no centro alternam os estados. Não use demo=1 na transmissão real.
+
+FOTOS
+O padrão preenche o hexágono. Para retratos PNG de corpo, marque
+Encaixar foto inteira e ajuste o tamanho entre 70 e 160.
+Fotos ausentes mostram a logo TheMask; times sem logo mostram sua sigla.
+
+INTERFACE DO CS2
+O pacote usa o killfeed nativo do CS2 e não inclui radar próprio.
+Use cfg/themaskon.cfg para o modo compacto, sem radar nativo.
+Use cfg/themaskoff.cfg para restaurar a interface padrão.
+Esses dois arquivos devem ser copiados para game/csgo/cfg do cliente CS2.
+
+VALIDAÇÃO
+Consulte a documentação do repositório para o resultado das verificações.
+A integração deve ser conferida no seu JTs/CS2 em modo espectador antes da live.
+
+CRÉDITOS
+Visual: referência The Mask Cup fornecida pelo usuário.
+Integração GSI e Socket.IO: base Echo 1.0.2, de cshuds.com.
+Logo e fontes incluídas localmente. Tipografia: Oswald e Rajdhani (Google Fonts).

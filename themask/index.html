@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Mask Cup — Broadcast HUD</title>
+<link rel="icon" href="./assets/themask-logo-128.webp">
+<link rel="stylesheet" href="./assets/themask-fonts.css">
+<link rel="stylesheet" href="./assets/themask.css">
+</head><body>
+<div id="stage">
+  <div id="series"></div>
+
+  <div id="sb">
+    <div class="sb-logo l" id="lgL"><img alt=""><span></span></div>
+    <div class="sb-score" id="scL"><b class="tabnum">0</b><div class="pips"></div></div>
+    <div class="sb-mid" id="mid"><div class="sb-round" id="rnd"></div><div class="sb-time tabnum" id="time"></div></div>
+    <div class="sb-score" id="scR"><b class="tabnum">0</b><div class="pips"></div></div>
+    <div class="sb-logo r" id="lgR"><img alt=""><span></span></div>
+    <div class="sb-bomb">C4</div>
+  </div>
+  <div id="under">
+    <div class="names"><span id="nmL"></span><span id="nmR"></span></div>
+    <div class="act" id="act"><div class="act-bar"><i id="actBar"></i></div><div class="act-txt" id="actTxt"></div></div>
+  </div>
+  <div id="win"><img alt=""><div><b></b><small>Venceu o round</small></div></div>
+
+  <div id="alive"><div class="n l" id="alL">5</div><div class="vs">VS</div><div class="n r" id="alR">5</div></div>
+
+  <div class="team" id="tL"></div>
+  <div class="team" id="tR"></div>
+
+  <div id="obs" hidden>
+    <div class="ob-stats"><span><b data-k="kills">0</b>K</span><span><b data-k="assists">0</b>A</span><span><b data-k="deaths">0</b>D</span><span><b data-k="round_dmg">0</b>DANO</span></div>
+    <div class="ob-gun" id="obGun"></div>
+    <div class="ob-av hex"><img class="hex" alt=""></div>
+    <div class="box"></div>
+    <div class="ob-l"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l8 3v6c0 5-3.4 9.4-8 11-4.6-1.6-8-6-8-11V5z"/></svg><span class="tabnum" id="obHp">100</span></div>
+    <div class="ob-name" id="obName"></div>
+    <div class="ob-r"><span class="tabnum" id="obAmmo"></span></div>
+    <div class="hpline" id="obLine"></div>
+  </div>
+</div>
+<div id="dbg" role="status"></div>
+<div id="hud-credit">THE MASK CUP <span>· BASE ECHO / CSHUDS.COM</span></div>
+
+<script type="module" src="./assets/themask-boot.js"></script></body></html>

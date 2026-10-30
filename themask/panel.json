@@ -1,0 +1,29 @@
+[
+  {
+    "label": "TheMask — Controles",
+    "name": "themask",
+    "inputs": [{
+      "type": "action", "name": "themask_controls", "label": "Visibilidade",
+      "values": [
+        { "name": "toggleActive", "label": "Mostrar / ocultar HUD (Alt+O)" },
+        { "name": "showHud", "label": "Mostrar HUD" },
+        { "name": "hideHud", "label": "Ocultar HUD" },
+        { "name": "toggleTheMaskLogo", "label": "Mostrar / ocultar logo (Alt+L)" }
+      ]
+    }]
+  },
+  {
+    "label": "TheMask — Personalização",
+    "name": "themask_settings",
+    "inputs": [
+      { "type": "text", "name": "championship", "label": "Nome do campeonato. Padrão: THE MASK CUP" },
+      { "type": "text", "name": "ct_color", "label": "Cor CT. Padrão: #2B93E0" },
+      { "type": "text", "name": "t_color", "label": "Cor TR. Padrão: #E4AE35" },
+      { "type": "text", "name": "best_of", "label": "Melhor de: 1, 3 ou 5 (se não houver vetos cadastrados)" },
+      { "type": "text", "name": "photo_scale", "label": "Tamanho das fotos (%): 70 a 160. Padrão: 100" },
+      { "type": "checkbox", "name": "contain_photos", "label": "Encaixar foto inteira no hexágono" },
+      { "type": "checkbox", "name": "hide_logo", "label": "Ocultar logo TheMask" },
+      { "type": "checkbox", "name": "hide_alive", "label": "Ocultar contador de jogadores vivos" }
+    ]
+  }
+]
