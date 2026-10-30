@@ -240,7 +240,10 @@
           0
         ]
       }
-    ]
+    ],
+    "money": 14150,
+    "loss_bonus": 2900,
+    "loss_level": 3
   },
   "right": {
     "side": "T",
@@ -472,7 +475,10 @@
           0
         ]
       }
-    ]
+    ],
+    "money": 11650,
+    "loss_bonus": 1400,
+    "loss_level": 0
   },
   "series": {
     "best_of": 1,
@@ -548,5 +554,51 @@
         ]
       }
     ]
+  },
+  "last_mvp": {
+    "id": "76561198789305250",
+    "name": "tt.tv/THIGAS1FPS",
+    "avatar": "./assets/demo/left-3.jpg",
+    "slot": 4,
+    "side": "CT",
+    "hp": 100,
+    "armor": 100,
+    "helmet": false,
+    "kit": true,
+    "money": 4400,
+    "flashed": 0,
+    "burning": 0,
+    "round_kills": 2,
+    "round_dmg": 187,
+    "kills": 18,
+    "assists": 0,
+    "deaths": 7,
+    "mvps": 0,
+    "weapon": "FAMAS",
+    "secondary": "USP-S",
+    "active": "FAMAS",
+    "ammo": [
+      21,
+      60
+    ],
+    "nades": [
+      "smoke",
+      "flash",
+      "flash"
+    ],
+    "bomb": false,
+    "taser": false,
+    "observed": true,
+    "position": [
+      -400,
+      -1200,
+      0
+    ],
+    "forward": [
+      1,
+      0,
+      0
+    ],
+    "round": 17
   }
 }

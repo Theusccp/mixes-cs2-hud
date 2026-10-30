@@ -7,14 +7,14 @@ import zipfile
 
 ROOT = Path(__file__).resolve().parents[1]
 HUD = ROOT / 'themask'
-OUTPUT = ROOT / 'dist' / 'TheMask-HUD-v1.2.zip'
+OUTPUT = ROOT / 'dist' / 'TheMask-HUD-v1.3.zip'
 
 def main():
     for name in ['hud.json','panel.json','keybinds.json','index.html','thumb.png',
                  'assets/themask-engine.js','assets/themask-integration.js',
                  'assets/themask-renderer.js','assets/themask-state.js',
                  'assets/themask-logo-256.webp','assets/themask-fonts.css',
-                 'assets/themask-radar.js','assets/themask-radar-maps.json']:
+                 'assets/themask-radar.js','assets/themask-radar-maps.json','assets/themask-panels.js']:
         if not (HUD/name).is_file():
             raise SystemExit('Arquivo ausente: '+name)
     for path in HUD.rglob('*.json'):
@@ -26,7 +26,7 @@ def main():
         attrs=re.findall(r'(?:src|href)=["\'](\./[^"\']+)["\']',content)
         modules=re.findall(r'(?:from|import)\s*\(?["\'](\./[^"\']+)["\']',content)
         styles=re.findall(r'url\(["\']?(\./[^)"\']+)',content)
-        refs=[(HUD if path.name=='themask-renderer.js' else path.parent, ref) for ref in attrs]
+        refs=[(HUD if path.suffix=='.js' and ref.startswith('./assets/') else path.parent, ref) for ref in attrs]
         refs.extend((path.parent,ref) for ref in modules+styles)
         for parent,ref in refs:
             if not (parent/ref).is_file():

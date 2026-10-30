@@ -1,8 +1,10 @@
 import { safeImage } from './themask-state.js';
 import { createRadar } from './themask-radar.js';
 import { grenadeBadge } from './themask-grenades.js';
+import { createPanels } from './themask-panels.js';
 export function createRenderer(options = {}) {
   const radar=createRadar();
+  const panels=createPanels();
   let lastState = null;
   const failedImages = new Set();
   const $ = (s, el = document) => el.querySelector(s);
@@ -125,6 +127,7 @@ export function createRenderer(options = {}) {
     if (!s.ok) return;
     const L = s.left, R = s.right;
     radar.render(s);
+    panels.render(s);
     logo($('#lgL'), L); logo($('#lgR'), R);
     side($('#scL'), L.side); side($('#scR'), R.side);
     txt($('#scL b'), L.score); txt($('#scR b'), R.score);

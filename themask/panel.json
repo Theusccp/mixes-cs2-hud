@@ -81,6 +81,21 @@
         "type": "checkbox",
         "name": "hide_radar",
         "label": "Ocultar radar TheMask"
+      },
+      {
+        "type": "checkbox",
+        "name": "hide_ranking",
+        "label": "Ocultar ranking nas compras e pausas"
+      },
+      {
+        "type": "checkbox",
+        "name": "hide_mvp",
+        "label": "Ocultar destaque da rodada"
+      },
+      {
+        "type": "checkbox",
+        "name": "hide_economy",
+        "label": "Ocultar economia das equipes"
       }
     ]
   }

@@ -5,7 +5,7 @@ Variante independente da MixES, baseada na referência visual fornecida pelo usu
 ## Instalar no JTs e OBS
 
 1. Gere o pacote em Windows com `py -3 scripts/package-themask.py` ou, em Linux/macOS, com `python3 scripts/package-themask.py`.
-2. No JTs, importe `dist/TheMask-HUD-v1.2.zip`, sem descompactar.
+2. No JTs, importe `dist/TheMask-HUD-v1.3.zip`, sem descompactar.
 3. Inicie **The Mask Cup — Broadcast**. Cadastre times, logos, jogadores e fotos no gerenciador como na Echo/MixES.
 4. Copie a URL para uma fonte Navegador do OBS, em **1920 × 1080**.
 5. Abra o painel da HUD no JTs para configurar nome do campeonato, cores, melhor de, tamanho e encaixe das fotos.
@@ -38,11 +38,22 @@ Avatares públicos da Steam usam a versão full quando a URL aponta para um thum
 
 A camada de transmissão tem `pointer-events: none`, seleção e cursor desativados. Ela não gerencia o foco do Windows ou a captura do cursor do CS2; um cursor escapando da janela do jogo precisa ser conferido no ambiente do jogo/OBS. Use a fonte em 1920×1080 para evitar cortes ou reamostragem adicional.
 
+## Ranking, destaque e economia (v1.3)
+
+Durante compra, pausas e fim de mapa, o ranking ocupa o lugar do radar à esquerda. São exibidos os dez jogadores, abates, mortes e K/D em ordem decrescente de K/D. Zero mortes usa o divisor 1, como na base Echo, sem gerar infinito. Durante a rodada, o ranking se oculta e o radar volta.
+
+O destaque da última rodada aparece à direita no encerramento, na compra, nas pausas e no fim do mapa. Segue o critério da base Echo: mais abates, com dano como desempate. O retrato, o nome e os números são guardados antes de o CS2 zerar os contadores da próxima rodada. Uma sessão sem rodada encerrada não inventa um destaque.
+
+A faixa abaixo do placar mostra o dinheiro somado dos jogadores de cada equipe e o bônus de derrota durante compra/pausa. O bônus usa o contador recebido pelo GSI e o cálculo padrão da Echo: 1400 + 500 por nível, limitado a 3400. Servidores com pagamentos personalizados precisam adequar esse cálculo. Valores desconhecidos aparecem como travessão. As cores acompanham o lado das equipes.
+
+No painel de personalização, é possível ocultar ranking, destaque ou economia separadamente. Quando o ranking está desativado, o radar mantém sua configuração de visibilidade normal.
+
 ## Implementação e manutenção
 
 - `themask/assets/themask.css`: layout da referência e ajustes locais.
 - `themask/assets/themask-renderer.js`: atualização dos elementos, fotos, relógio e ação da bomba.
 - `themask/assets/themask-radar.js` e `themask-radar-maps.json`: projeção do radar e calibrações dos assets.
+- `themask/assets/themask-panels.js`: ranking, snapshot do destaque e renderização da economia.
 - `themask/assets/themask-state.js`: conversão dos dados enriquecidos do JTs para a apresentação.
 - `themask/assets/themask-integration.js`: assinatura de dados, API de times, painel e atalhos.
 - `themask/assets/themask-engine.js`: bundle Echo com a entrada visual substituída, preservando registro Socket.IO, GSI e dados dos jogadores.

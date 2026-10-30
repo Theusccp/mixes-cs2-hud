@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
 const source=await readFile(new URL('../themask/assets/themask-state.js',import.meta.url),'utf8');
-const {normalizeJTs,safeImage,playerPhoto,teamLabel}=await import('data:text/javascript;base64,'+Buffer.from(source).toString('base64'));
+const {normalizeJTs,safeImage,playerPhoto,teamLabel,lossBonus}=await import('data:text/javascript;base64,'+Buffer.from(source).toString('base64'));
 function fixture(){
   const ct={side:'CT',orientation:'left',score:9,name:'COBRA',matches_won_this_series:1};
   const tr={side:'T',orientation:'right',score:8,name:'LOBO',matches_won_this_series:0};
@@ -66,4 +66,30 @@ test('radar projeta coordenadas negativas, rejeita dados ausentes e separa andar
   assert.equal(project([NaN,1,0],maps.de_mirage),null);
   assert.equal(project([0,0,-450],maps.de_nuke).level,'high');
   assert.equal(project([0,0,-451],maps.de_nuke).level,'low');
+});
+
+test('economia soma o dinheiro dos jogadores e mantém dados desconhecidos como ausentes',()=>{
+  const data=fixture();data.map.team_ct.consecutive_round_losses=3;
+  let state=normalizeJTs(data);assert.equal(state.left.money,6500);assert.equal(state.left.loss_bonus,2900);
+  assert.equal(state.right.loss_bonus,null);
+  delete data.players[0].state.money;state=normalizeJTs(data);assert.equal(state.left.money,null);
+  assert.deepEqual([0,1,2,3,4,7].map(lossBonus),[1400,1900,2400,2900,3400,3400]);
+});
+
+const panelSource=await readFile(new URL('../themask/assets/themask-panels.js',import.meta.url),'utf8');
+const {buildRanking,createRoundHighlights}=await import('data:text/javascript;base64,'+Buffer.from(panelSource).toString('base64'));
+test('ranking usa K/D e lida com zero mortes sem infinito',()=>{
+  const rows=buildRanking([{id:'a',kills:8,deaths:0},{id:'b',kills:20,deaths:5},{id:'c',kills:0,deaths:0}]);
+  assert.equal(rows[0].id,'a');assert.equal(rows[0].kd,8);assert.equal(rows[2].kd,0);
+});
+test('destaque usa abates e dano, sobrevive ao reset da compra e é limpo em novo mapa',()=>{
+  const tracker=createRoundHighlights();const data=fixture();
+  data.players[2].state.round_kills=2;data.players[2].state.round_totaldmg=250;
+  let state=normalizeJTs(data);assert.equal(tracker.update(state),null);
+  data.round={phase:'over',win_team:'T'};data.phase_countdowns.phase='over';
+  const end=tracker.update(normalizeJTs(data));assert.equal(end.id,'3');assert.equal(end.round_dmg,250);
+  for(const p of data.players){p.state.round_kills=0;p.state.round_totaldmg=0;}
+  data.round={phase:'freezetime'};data.phase_countdowns.phase='freezetime';data.map.round=18;
+  const freeze=tracker.update(normalizeJTs(data));assert.equal(freeze.id,'3');assert.equal(freeze.round_dmg,250);
+  data.map.name='de_inferno';assert.equal(tracker.update(normalizeJTs(data)),null);
 });

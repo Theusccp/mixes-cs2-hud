@@ -1,7 +1,7 @@
-THE MASK CUP — BROADCAST HUD 1.2.0
+THE MASK CUP — BROADCAST HUD 1.3.0
 
 INSTALAÇÃO NO JTs
-1. Importe TheMask-HUD-v1.2.zip em HUDs > Import HUD, sem descompactar.
+1. Importe TheMask-HUD-v1.3.zip em HUDs > Import HUD, sem descompactar.
 2. Inicie The Mask Cup — Broadcast.
 3. Copie a URL para uma fonte Navegador do OBS, em 1920 x 1080.
 4. Cadastre jogadores, fotos e times no JTs. Os dados vêm da mesma integração GSI usada pela Echo.
@@ -16,6 +16,16 @@ PRÉVIA
 Abra a URL da HUD com &demo=1 (ou ?demo=1 se não houver parâmetros).
 A demonstração usa arquivos locais e não faz conexão com o JTs.
 Os botões no centro alternam os estados. Não use demo=1 na transmissão real.
+
+ESTATÍSTICAS
+Na compra, nas pausas e no fim do mapa, o ranking mostra abates, mortes e K/D.
+O ranking ocupa o lugar do radar; durante a rodada o radar volta.
+O destaque mostra foto, abates e dano da última rodada encerrada.
+Critério da base Echo: mais abates, com dano como desempate.
+A economia mostra dinheiro total das equipes e bônus de derrota durante
+compra/pausa. O bônus usa a escala padrão da Echo, de 1400 até 3400.
+Cada painel pode ser ocultado separadamente na personalização do JTs.
+O destaque só aparece depois que uma rodada com dados de abates/dano terminar.
 
 FOTOS
 O padrão preenche o hexágono. Para retratos PNG de corpo, marque

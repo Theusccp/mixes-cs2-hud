@@ -26,6 +26,11 @@ export function teamLabel(name,side){
   return !normalized||/^(contra[- ]terroristas?|counter[- ]terrorists?|terroristas?|terrorists?|ct|tr|t)$/.test(normalized)?label:String(name);
 }
 
+export function lossBonus(counter){
+  if(counter==null||!Number.isFinite(Number(counter)))return null;
+  return Math.min(3400,1400+Math.max(0,Math.floor(Number(counter)))*500);
+}
+
 export function weaponName(value) {
   const raw = String(value || '').replace(/^weapon_/, '');
   const names = { m4a1_silencer: 'M4A1-S', m4a1: 'M4A4', usp_silencer: 'USP-S',
@@ -61,6 +66,8 @@ export function normalizeJTs(data, match = null, settings = {}, apiBase) {
       hp: clamp(p.state?.health, 0, 100), armor: clamp(p.state?.armor, 0, 100),
       kit: Boolean(p.state?.defusekit), helmet: Boolean(p.state?.helmet),
       money: Math.max(0, finite(p.state?.money)), kills: finite(p.stats?.kills),
+      money_known:p.state?.money!=null&&Number.isFinite(Number(p.state.money)),
+      real_name:/^(undefined|null)( (undefined|null))?$/i.test(String(p.realName||'').trim())?'':String(p.realName||'').trim(),
       deaths: finite(p.stats?.deaths), assists: finite(p.stats?.assists),
       round_kills: clamp(p.state?.round_kills, 0, 5), round_dmg: finite(p.state?.round_totaldmg),
       weapon: weaponName((primary || active)?.name), secondary: weaponName(pistol?.name),
@@ -71,9 +78,13 @@ export function normalizeJTs(data, match = null, settings = {}, apiBase) {
     };
   };
   const all = data.players.map(player);
-  const team = t => ({side:t.side, name:teamLabel(t.name,t.side), tag:t.shortName || '',
-    score:finite(t.score), logo:safeImage(t.logo, apiBase),
-    players:all.filter(p => p.side === t.side).sort((a,b) => (a.slot || 10) - (b.slot || 10))});
+  const team = t => {
+    const players=all.filter(p=>p.side===t.side).sort((a,b)=>(a.slot||10)-(b.slot||10));
+    return {side:t.side,name:teamLabel(t.name,t.side),tag:t.shortName||'',score:finite(t.score),
+      logo:safeImage(t.logo,apiBase),players,loss_bonus:lossBonus(t.consecutive_round_losses),
+      loss_level:t.consecutive_round_losses==null?null:clamp(Math.floor(finite(t.consecutive_round_losses)),0,4),
+      money:players.length&&players.every(p=>p.money_known)?players.reduce((sum,p)=>sum+p.money,0):null};
+  };
   let phase = data.phase_countdowns?.phase || data.round?.phase || 'live';
   if (data.map.phase === 'gameover') phase = 'gameover';
   else if (data.bomb?.state === 'defusing') phase = 'defuse';
@@ -92,6 +103,7 @@ export function normalizeJTs(data, match = null, settings = {}, apiBase) {
     action_total:phase === 'defuse' ? (data.bomb?.player?.state?.defusekit ? 5 : 10)
       : data.bomb?.state === 'planting' ? 3 : 40,
     win_team:data.round?.win_team || '', left:team(left), right:team(right),
+    panels:{ranking:settings.hide_ranking!==true,mvp:settings.hide_mvp!==true,economy:settings.hide_economy!==true},
     observed:all.find(p => p.observed) || null,
     radar:{map:String(data.map.name||'').split('/').pop(),bomb:data.bomb,
       grenades:(Array.isArray(data.grenades)?data.grenades:[]).filter(g=>g.type==='smoke')},

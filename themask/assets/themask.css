@@ -198,3 +198,40 @@ body:not(.demo-mode), body:not(.demo-mode) #stage, body:not(.demo-mode) #stage *
 .radar-smoke { fill: #d8e0e54a; stroke: #f2f5f9aa; stroke-width: 3; }
 .hide-radar #themask-radar { display: none; }
 .radar-unavailable > svg { opacity: .2; }
+
+/* Round-break statistics use the radar footprint and leave the center clear. */
+.ranking-active #themask-radar { visibility: hidden; }
+#themask-ranking { position: absolute; top: 72px; left: 18px; width: 320px; background: rgba(9,13,19,.93); border-top: 2px solid var(--gold); box-shadow: 0 8px 24px #0005; clip-path: polygon(0 0,calc(100% - 12px) 0,100% 12px,100% 100%,0 100%); }
+#themask-ranking header { height: 37px; display: flex; align-items: center; justify-content: space-between; padding: 0 12px; background: #141b23; }
+#themask-ranking header span { color: var(--gold-hi); font: 700 11px 'Rajdhani',sans-serif; letter-spacing: 1.5px; }
+#themask-ranking header strong { font: 600 17px 'Oswald',sans-serif; letter-spacing: .6px; }
+.ranking-labels { display: grid; grid-template-columns: 1fr 28px 28px 44px; gap: 5px; padding: 5px 10px; font: 700 10px 'Rajdhani',sans-serif; color: #c8d0d8; }
+.ranking-labels span { padding-left: 47px; }.ranking-labels b { text-align: center; }
+.ranking-row { display: grid; grid-template-columns: 16px 26px minmax(0,1fr) 28px 28px 44px; align-items: center; gap: 5px; height: 32px; padding: 2px 10px; border-top: 1px solid #ffffff0c; border-left: 2px solid var(--sc); background: linear-gradient(90deg,#ffffff08,transparent); }
+.ranking-row .rank-pos { color: var(--gold-hi); font: 700 11px 'Rajdhani',sans-serif; }
+.ranking-row .rank-photo { width: 26px; height: 28px; object-fit: cover; }
+.ranking-row .rank-name { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; font: 600 15px 'Oswald',sans-serif; }
+.ranking-row b { text-align: center; font: 700 17px 'Rajdhani',sans-serif; font-variant-numeric: tabular-nums; }
+.ranking-row .rank-kd { color: var(--gold-hi); }
+
+#themask-mvp { position: absolute; top: 108px; right: 18px; width: 262px; height: 302px; overflow: hidden; background: linear-gradient(145deg,rgba(21,28,37,.97),rgba(8,12,18,.92)); border-top: 2px solid var(--gold); box-shadow: 0 8px 25px #0005; clip-path: polygon(12px 0,100% 0,100% 100%,0 100%,0 12px); }
+#themask-mvp header { position: relative; z-index: 2; padding: 12px 14px 0; }
+#themask-mvp header small { display: block; color: var(--gold-hi); font: 700 10px 'Rajdhani',sans-serif; letter-spacing: 2px; }
+#themask-mvp header strong { font: 600 20px 'Oswald',sans-serif; letter-spacing: .2px; }
+.mvp-totals { position: absolute; z-index: 2; left: 14px; top: 78px; display: grid; gap: 12px; }
+.mvp-totals div { width: 65px; padding: 5px; text-align: center; border-left: 2px solid var(--sc); background: #ffffff0b; }
+.mvp-totals span { display: block; color: #dce2e9; font: 700 10px 'Rajdhani',sans-serif; letter-spacing: 1px; }
+.mvp-totals b { color: var(--sc); font: 700 34px 'Oswald',sans-serif; line-height: 1.15; font-variant-numeric: tabular-nums; }
+.mvp-photo { position: absolute; width: 160px; height: 180px; top: 70px; right: 8px; object-fit: contain; object-position: center bottom; }
+.mvp-identity { position: absolute; z-index: 3; left: 0; right: 0; bottom: 0; padding: 22px 12px 12px; background: linear-gradient(transparent,#090d13 35%); text-align: center; }
+.mvp-identity b { display: block; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; font: 600 25px 'Oswald',sans-serif; }
+.mvp-identity span { display: block; color: #cbd2dc; font: 700 12px 'Rajdhani',sans-serif; }
+
+#themask-economy { position: absolute; top: 139px; left: 50%; width: 616px; height: 65px; transform: translateX(-50%); display: flex; background: rgba(8,12,18,.93); border-top: 1px solid #d9a94c77; clip-path: polygon(0 0,100% 0,calc(100% - 10px) 100%,10px 100%); }
+.eco-team { width: 50%; display: grid; grid-template-columns: 1fr 1fr; padding: 7px 6px; background: linear-gradient(180deg,#ffffff06,transparent); }
+.eco-team > div { position: relative; text-align: center; }
+.eco-team span { display: block; color: #cfd5de; font: 700 9px 'Rajdhani',sans-serif; letter-spacing: .5px; }
+.eco-team b { color: var(--sc); font: 600 25px 'Oswald',sans-serif; line-height: 1.25; font-variant-numeric: tabular-nums; }
+.eco-right { border-left: 1px solid #ffffff15; }
+.eco-level { display: flex; justify-content: center; gap: 3px; margin-top: 1px; }
+.eco-level i { width: 12px; height: 3px; background: #ffffff24; transform: skewX(-20deg); }.eco-level i.on { background: var(--sc); }
