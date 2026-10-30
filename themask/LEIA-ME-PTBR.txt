@@ -1,7 +1,7 @@
-THE MASK CUP — BROADCAST HUD 1.3.0
+THE MASK CUP — BROADCAST HUD 1.4.0
 
 INSTALAÇÃO NO JTs
-1. Importe TheMask-HUD-v1.3.zip em HUDs > Import HUD, sem descompactar.
+1. Importe TheMask-HUD-v1.4.zip em HUDs > Import HUD, sem descompactar.
 2. Inicie The Mask Cup — Broadcast.
 3. Copie a URL para uma fonte Navegador do OBS, em 1920 x 1080.
 4. Cadastre jogadores, fotos e times no JTs. Os dados vêm da mesma integração GSI usada pela Echo.
@@ -27,6 +27,11 @@ compra/pausa. O bônus usa a escala padrão da Echo, de 1400 até 3400.
 Cada painel pode ser ocultado separadamente na personalização do JTs.
 O destaque só aparece depois que uma rodada com dados de abates/dano terminar.
 
+ANIMAÇÕES
+Ranking, economia e destaque entram e saem suavemente nas mudanças de fase.
+O radar volta depois do recolhimento do ranking; as linhas entram em sequência.
+A preferência do sistema por movimento reduzido desativa os efeitos.
+
 FOTOS
 O padrão preenche o hexágono. Para retratos PNG de corpo, marque
 Encaixar foto inteira e ajuste o tamanho entre 70 e 160.
@@ -47,7 +52,7 @@ O radar mostra jogadores, direção, mortos, C4 e fumaças a partir do GSI.
 Radar transparente, sem painel escuro ou moldura.
 Inventário com ícones de HE, flash, smoke, molotov/incendiária e decoy
 dentro de hexágonos, com as quantidades de granadas do jogador.
-Tamanho padrão: 320 px. Ajustável de 240 a 420 no painel.
+Tamanho padrão: 380 px. Ajustável de 240 a 480 no painel.
 Mapas: Mirage, Dust2, Inferno, Nuke, Train, Overpass, Ancient, Anubis,
 Vertigo e Cache, conforme os assets e calibrações existentes na base Echo.
 Nomes padrão dos lados aparecem como CT / TR.

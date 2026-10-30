@@ -5,7 +5,7 @@ Variante independente da MixES, baseada na referência visual fornecida pelo usu
 ## Instalar no JTs e OBS
 
 1. Gere o pacote em Windows com `py -3 scripts/package-themask.py` ou, em Linux/macOS, com `python3 scripts/package-themask.py`.
-2. No JTs, importe `dist/TheMask-HUD-v1.3.zip`, sem descompactar.
+2. No JTs, importe `dist/TheMask-HUD-v1.4.zip`, sem descompactar.
 3. Inicie **The Mask Cup — Broadcast**. Cadastre times, logos, jogadores e fotos no gerenciador como na Echo/MixES.
 4. Copie a URL para uma fonte Navegador do OBS, em **1920 × 1080**.
 5. Abra o painel da HUD no JTs para configurar nome do campeonato, cores, melhor de, tamanho e encaixe das fotos.
@@ -32,7 +32,7 @@ O radar usa as imagens e calibrações já presentes na base Echo para Mirage, D
 
 O radar tem fundo transparente, sem painel escuro, borda ou rodapé. Apenas o mapa, os marcadores e um cabeçalho discreto ficam sobre o jogo. O inventário mantém os hexágonos e exibe silhuetas vetoriais para HE, flashbang, smoke, molotov/incendiária e decoy. Duas flashes aparecem como dois ícones.
 
-O painel permite ajustar o radar de 240 a 420 px (padrão 320) ou ocultá-lo. As cores acompanham CT/TR. Nomes genéricos Contra-Terroristas/Terroristas aparecem como CT/TR; nomes de equipes cadastradas são preservados.
+O painel permite ajustar o radar de 240 a 480 px (padrão 380) ou ocultá-lo. As cores acompanham CT/TR. Nomes genéricos Contra-Terroristas/Terroristas aparecem como CT/TR; nomes de equipes cadastradas são preservados.
 
 Avatares públicos da Steam usam a versão full quando a URL aponta para um thumbnail. Retratos personalizados mantêm o arquivo original; não há recompressão ou filtro de nitidez na HUD. A escala desnecessária por transform foi removida das imagens. Para um retrato personalizado, prefira PNG original com 800 × 834 px ou mais na proporção 400:417. A HUD não consegue recuperar detalhes ausentes da imagem cadastrada.
 
@@ -48,18 +48,23 @@ A faixa abaixo do placar mostra o dinheiro somado dos jogadores de cada equipe e
 
 No painel de personalização, é possível ocultar ranking, destaque ou economia separadamente. Quando o ranking está desativado, o radar mantém sua configuração de visibilidade normal.
 
+## Transições de transmissão (v1.4)
+
+A troca entre ranking e radar tem recolhimento e revelação suaves, inspirados no vídeo de referência. O ranking entra com as linhas em sequência; destaque e economia acompanham as mudanças de fase. Atualizações frequentes do GSI preservam as linhas e não reiniciam as animações. Trocas rápidas de fase cancelam a transição anterior. A preferência do sistema por movimento reduzido desativa esses efeitos. O radar transparente agora mede 380 px por padrão (ajustável de 240 a 480 px).
+
 ## Implementação e manutenção
 
 - `themask/assets/themask.css`: layout da referência e ajustes locais.
 - `themask/assets/themask-renderer.js`: atualização dos elementos, fotos, relógio e ação da bomba.
 - `themask/assets/themask-radar.js` e `themask-radar-maps.json`: projeção do radar e calibrações dos assets.
+- `themask/assets/themask-motion.js`: transições canceláveis, acionadas apenas quando a visibilidade muda.
 - `themask/assets/themask-panels.js`: ranking, snapshot do destaque e renderização da economia.
 - `themask/assets/themask-state.js`: conversão dos dados enriquecidos do JTs para a apresentação.
 - `themask/assets/themask-integration.js`: assinatura de dados, API de times, painel e atalhos.
 - `themask/assets/themask-engine.js`: bundle Echo com a entrada visual substituída, preservando registro Socket.IO, GSI e dados dos jogadores.
 - `themask/panel.json`: campos do gerenciador.
 
-Para validar a conversão de dados, execute `node --test tests/themask-state.mjs` (Node.js 18+). A prévia foi conferida em Chromium em 1920×1080 e 1280×720. Uma simulação local validou o transporte Socket.IO, o processamento GSI da base, fotos, registro, painel, atalhos, desarme, transparência e escape de textos. A instalação em JTs e a transmissão real devem ser conferidas no Windows/CS2/OBS antes de uma live. Prévia e simulação de dados não substituem essa verificação.
+Para validar a conversão de dados, execute `node --test tests/themask-state.mjs` (Node.js 18+). A prévia foi conferida em Chromium em 1920×1080 e 1280×720. Uma simulação local validou o transporte Socket.IO, o processamento GSI da base, fotos, registro, painel, atalhos, desarme, transparência e escape de textos. As transições também foram verificadas com trocas rápidas de fase, atualizações repetidas do GSI, movimento reduzido e radar em 380/480 px. A instalação em JTs e a transmissão real devem ser conferidas no Windows/CS2/OBS antes de uma live. Prévia e simulação de dados não substituem essa verificação.
 
 ## Créditos
 

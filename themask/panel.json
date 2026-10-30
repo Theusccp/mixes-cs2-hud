@@ -75,7 +75,7 @@
       {
         "type": "text",
         "name": "radar_size",
-        "label": "Tamanho do radar (px): 240 a 420. Padrão: 320"
+        "label": "Tamanho do radar (px): 240 a 480. Padrão: 380"
       },
       {
         "type": "checkbox",

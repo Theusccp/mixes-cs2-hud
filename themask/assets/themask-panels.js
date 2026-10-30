@@ -1,3 +1,4 @@
+import { createPanelMotion } from './themask-motion.js';
 const number=value=>Number.isFinite(Number(value))?Number(value):0;
 const players=state=>[...(state.left?.players||[]),...(state.right?.players||[])];
 const clone=player=>({...player,nades:[...(player.nades||[])]});
@@ -41,6 +42,7 @@ export function createRoundHighlights(){
 export function createPanels(){
   const ranking=document.querySelector('#themask-ranking'),rows=ranking.querySelector('.ranking-rows');
   const mvp=document.querySelector('#themask-mvp'),economy=document.querySelector('#themask-economy');
+  const radar=document.querySelector('#themask-radar'),show=createPanelMotion();
   const history=createRoundHighlights();
   const image=(element,url)=>{
     const source=url||'./assets/themask-logo-256.webp';
@@ -53,29 +55,38 @@ export function createPanels(){
     const highlight=history.update(state)||state.last_mvp||null;
     const shop=['freezetime','timeout_ct','timeout_t','paused','gameover'].includes(state.phase);
     const options=state.panels||{};
-    ranking.hidden=!(shop&&options.ranking!==false);
-    economy.hidden=!(shop&&state.phase!=='gameover'&&options.economy!==false);
-    mvp.hidden=!((shop||state.phase==='over')&&highlight&&options.mvp!==false);
-    document.documentElement.classList.toggle('ranking-active',!ranking.hidden);
-    if(!ranking.hidden){
+    const rankingVisible=shop&&options.ranking!==false;
+    const economyVisible=shop&&state.phase!=='gameover'&&options.economy!==false;
+    const mvpVisible=Boolean((shop||state.phase==='over')&&highlight&&options.mvp!==false);
+    const entered=show(ranking,rankingVisible,260);
+    show(economy,economyVisible);
+    show(mvp,mvpVisible,100);
+    show(radar,!rankingVisible,300);
+    if(rankingVisible){
+      const existing=new Map([...rows.children].map(row=>[row.dataset.id,row]));
       const nodes=buildRanking(players(state)).map((p,index)=>{
-        const row=document.createElement('div');row.className='ranking-row '+p.side;
-        row.innerHTML='<span class="rank-pos"></span><img class="rank-photo hex" alt=""><span class="rank-name"></span><b class="rank-kills"></b><b class="rank-deaths"></b><b class="rank-kd"></b>';
+        const row=existing.get(String(p.id))||document.createElement('div');row.className='ranking-row '+p.side;row.dataset.id=String(p.id);
+        if(!row.children.length)row.innerHTML='<span class="rank-pos"></span><img class="rank-photo hex" alt=""><span class="rank-name"></span><b class="rank-kills"></b><b class="rank-deaths"></b><b class="rank-kd"></b>';
         text(row.querySelector('.rank-pos'),index+1);image(row.querySelector('img'),p.avatar);
         text(row.querySelector('.rank-name'),p.name);text(row.querySelector('.rank-kills'),p.kills);
         text(row.querySelector('.rank-deaths'),p.deaths);text(row.querySelector('.rank-kd'),p.kd.toFixed(2));
+        if(entered&&!matchMedia('(prefers-reduced-motion: reduce)').matches){
+          row.getAnimations().forEach(animation=>animation.cancel());
+          const animation=row.animate([{opacity:0,transform:'translateX(-16px)'},{opacity:1,transform:'translateX(0)'}],{duration:260,delay:340+index*28,fill:'both',easing:'ease-out'});
+          animation.finished.then(()=>animation.cancel()).catch(()=>{});
+        }
         return row;
       });
       rows.replaceChildren(...nodes);
     }
-    if(!mvp.hidden){
+    if(mvpVisible){
       mvp.classList.toggle('CT',highlight.side==='CT');mvp.classList.toggle('T',highlight.side==='T');
       image(mvp.querySelector('.mvp-photo'),highlight.avatar);
       text(mvp.querySelector('.mvp-name'),highlight.name);text(mvp.querySelector('.mvp-real-name'),highlight.real_name);
       text(mvp.querySelector('.mvp-kills'),highlight.round_kills);text(mvp.querySelector('.mvp-damage'),highlight.round_dmg);
       text(mvp.querySelector('.mvp-round'),highlight.round?'RODADA '+highlight.round:'ÚLTIMA RODADA');
     }
-    if(!economy.hidden){
+    if(economyVisible){
       for(const [side,team] of [['left',state.left],['right',state.right]]){
         const box=economy.querySelector('.eco-'+side);
         box.classList.toggle('CT',team.side==='CT');box.classList.toggle('T',team.side==='T');

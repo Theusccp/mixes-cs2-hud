@@ -76,7 +76,9 @@ test('economia soma o dinheiro dos jogadores e mantém dados desconhecidos como 
   assert.deepEqual([0,1,2,3,4,7].map(lossBonus),[1400,1900,2400,2900,3400,3400]);
 });
 
-const panelSource=await readFile(new URL('../themask/assets/themask-panels.js',import.meta.url),'utf8');
+const motionSource=await readFile(new URL('../themask/assets/themask-motion.js',import.meta.url),'utf8');
+const motionURL='data:text/javascript;base64,'+Buffer.from(motionSource).toString('base64');
+const panelSource=(await readFile(new URL('../themask/assets/themask-panels.js',import.meta.url),'utf8')).replace('./themask-motion.js',motionURL);
 const {buildRanking,createRoundHighlights}=await import('data:text/javascript;base64,'+Buffer.from(panelSource).toString('base64'));
 test('ranking usa K/D e lida com zero mortes sem infinito',()=>{
   const rows=buildRanking([{id:'a',kills:8,deaths:0},{id:'b',kills:20,deaths:5},{id:'c',kills:0,deaths:0}]);

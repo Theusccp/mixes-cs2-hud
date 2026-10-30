@@ -173,7 +173,7 @@ body:not(.demo-mode), body:not(.demo-mode) #stage, body:not(.demo-mode) #stage *
 #tL { left: 24px; } #tR { right: 24px; }
 
 /* Radar reuses the existing Echo overview calibration and local map textures. */
-:root { --radar-size: 320px; }
+:root { --radar-size: 380px; }
 #themask-radar { position: absolute; top: 72px; left: 18px; width: var(--radar-size); background: transparent; }
 #themask-radar header { display: flex; align-items: center; gap: 7px; height: 22px; padding: 0 4px; background: transparent; text-shadow: 0 1px 3px #000,0 0 5px #000; }
 #themask-radar header img { display: none; }
@@ -200,7 +200,6 @@ body:not(.demo-mode), body:not(.demo-mode) #stage, body:not(.demo-mode) #stage *
 .radar-unavailable > svg { opacity: .2; }
 
 /* Round-break statistics use the radar footprint and leave the center clear. */
-.ranking-active #themask-radar { visibility: hidden; }
 #themask-ranking { position: absolute; top: 72px; left: 18px; width: 320px; background: rgba(9,13,19,.93); border-top: 2px solid var(--gold); box-shadow: 0 8px 24px #0005; clip-path: polygon(0 0,calc(100% - 12px) 0,100% 12px,100% 100%,0 100%); }
 #themask-ranking header { height: 37px; display: flex; align-items: center; justify-content: space-between; padding: 0 12px; background: #141b23; }
 #themask-ranking header span { color: var(--gold-hi); font: 700 11px 'Rajdhani',sans-serif; letter-spacing: 1.5px; }
