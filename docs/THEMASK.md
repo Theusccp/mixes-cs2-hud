@@ -5,7 +5,7 @@ Variante independente da MixES, baseada na referência visual fornecida pelo usu
 ## Instalar no JTs e OBS
 
 1. Gere o pacote em Windows com `py -3 scripts/package-themask.py` ou, em Linux/macOS, com `python3 scripts/package-themask.py`.
-2. No JTs, importe `dist/TheMask-HUD-v1.5.zip`, sem descompactar.
+2. No JTs, importe `dist/TheMask-HUD-v1.5.1.zip`, sem descompactar.
 3. Inicie **The Mask Cup — Broadcast**. Cadastre times, logos, jogadores e fotos no gerenciador como na Echo/MixES.
 4. Copie a URL para uma fonte Navegador do OBS, em **1920 × 1080**.
 5. Abra o painel da HUD no JTs para configurar nome do campeonato, cores, melhor de, tamanho e encaixe das fotos.
@@ -88,3 +88,7 @@ Para validar a conversão de dados, execute `node --test tests/themask-state.mjs
 ## Créditos
 
 Referência visual e marca: The Mask Cup, fornecidas pelo usuário. Integração baseada em Echo 1.0.2/cshuds.com, com os créditos preservados no pacote. Oswald e Rajdhani foram obtidas do Google Fonts e incluídas localmente; os arquivos de licença estão em `themask/assets/licenses/`. As fotografias da demonstração vieram dos avatares públicos exibidos na referência e são usadas somente no modo de prévia.
+
+## Pacote de importação 1.5.1
+
+O ZIP entregue da v1.5 estava truncado, sem o registro final do diretório ZIP. O pacote foi reconstruído dos arquivos do repositório. O empacotador agora grava em arquivo temporário, fecha e sincroniza a escrita, confere CRC e conteúdo de todas as entradas e só então publica o nome final. A cópia salva da entrega 1.5.1 foi recuperada e comparada com o arquivo local por tamanho e SHA256. O teste `tests/themask-import.cjs`, executado com `adm-zip` 0.5.16 e o fonte atual `hud.routes.ts` do JTs, extraiu e comparou os 94 arquivos pelo próprio handler de importação; um ZIP truncado foi rejeitado pelo mesmo handler.

@@ -2,12 +2,15 @@
 """Build the independent TheMask ZIP for import into JTs HUD Manager."""
 from pathlib import Path
 import json
+import hashlib
+import os
 import re
+import tempfile
 import zipfile
 
 ROOT = Path(__file__).resolve().parents[1]
 HUD = ROOT / 'themask'
-OUTPUT = ROOT / 'dist' / 'TheMask-HUD-v1.5.zip'
+OUTPUT = ROOT / 'dist' / 'TheMask-HUD-v1.5.1.zip'
 
 def main():
     for name in ['hud.json','panel.json','keybinds.json','index.html','thumb.png',
@@ -36,14 +39,28 @@ def main():
             if not (parent/ref).is_file():
                 raise SystemExit('Referência ausente: '+str(path.relative_to(HUD))+' -> '+ref)
     OUTPUT.parent.mkdir(exist_ok=True)
-    with zipfile.ZipFile(OUTPUT,'w',compression=zipfile.ZIP_DEFLATED) as archive:
-        for path in sorted(HUD.rglob('*')):
-            if path.is_file() and not any(part.startswith('.') for part in path.relative_to(HUD).parts) and path.relative_to(HUD).parts[:2] != ('assistente','cache'):
-                archive.write(path,path.relative_to(HUD).as_posix())
-    with zipfile.ZipFile(OUTPUT) as archive:
-        assert archive.testzip() is None
-        assert 'hud.json' in archive.namelist()
+    # Never expose the final filename while the ZIP is still being written.
+    temporary = None
+    try:
+        with tempfile.NamedTemporaryFile(dir=OUTPUT.parent, suffix='.tmp', delete=False) as target:
+            temporary = Path(target.name)
+            with zipfile.ZipFile(target,'w',compression=zipfile.ZIP_DEFLATED) as archive:
+                for path in sorted(HUD.rglob('*')):
+                    if path.is_file() and not any(part.startswith('.') for part in path.relative_to(HUD).parts) and path.relative_to(HUD).parts[:2] != ('assistente','cache'):
+                        archive.write(path,path.relative_to(HUD).as_posix())
+            target.flush()
+            os.fsync(target.fileno())
+        with zipfile.ZipFile(temporary) as archive:
+            assert archive.testzip() is None
+            assert 'hud.json' in archive.namelist()
+            for name in archive.namelist():
+                assert archive.read(name) == (HUD/name).read_bytes(), name
+        os.replace(temporary, OUTPUT)
+    finally:
+        if temporary is not None:
+            temporary.unlink(missing_ok=True)
     print(OUTPUT)
+    print(f'{OUTPUT.stat().st_size} bytes; SHA256 {hashlib.sha256(OUTPUT.read_bytes()).hexdigest()}')
 
 if __name__=='__main__':
     main()
