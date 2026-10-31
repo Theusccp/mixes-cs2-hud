@@ -1,0 +1,54 @@
+ECHO / THEMASK — AUTOSPEC EXPERIMENTAL 0.1
+
+PRIMEIRO TESTE
+1. Nas opcoes de inicializacao do CS2 na Steam, ADICIONE -netconport 2020
+   sem apagar suas outras opcoes. Reinicie o CS2.
+2. Importe Echo-TheMask-AutoSpec-TESTE-v0.1.zip no JTs, sem descompactar.
+3. Extraia UMA COPIA do ZIP em uma pasta sua. Com o JTs aberto, execute
+   assistente/INICIAR-THEMASK.cmd desta copia. Feche o assistente antigo
+   antes, pois apenas um usa a porta 23416.
+4. Entre no servidor como ESPECTADOR e inicie a Echo AutoSpec TESTE.
+   Use Alt+Tab para voltar ao CS2. O automatico inicia DESLIGADO.
+5. Alt+Shift+D: simula escolhas no terminal do assistente, sem cortes.
+6. Alt+Shift+A: liga/desliga os cortes automaticos.
+   Alt+Shift+M: volta imediatamente ao manual.
+   Os mesmos botoes aparecem em Panel > AutoSpec no JTs.
+
+COMO ESCOLHE
+Usa posicoes, direcoes, proximidade de adversarios, dano recente,
+abates, municao quando recebida, clutch, plantio e desarme.
+Mantem a camera por pelo menos 3,5 segundos em cortes comuns. Desarme,
+plantio e morte do assistido podem antecipar o corte, com limite de 1 s.
+Troca manual de um assistido vivo pausa o diretor por dez segundos.
+O alvo deve aparecer no GSI em ate tres segundos; sem confirmacao, o
+automatico pausa. Corrija a conexao e use manual/automatico para retomar.
+As fontes separadas do OBS nao devem reativar um diretor ja parado.
+
+LIMITES IMPORTANTES DO TESTE
+Nao e uma IA treinada e nao preve o futuro nem conhece paredes do mapa.
+Distancia/direcao indicam possivel confronto, sem garantir visibilidade.
+Pode perder duelos simultaneos. Teste antes da transmissao oficial.
+Nao utiliza HLAE, DLLs ou leitura de memoria; usa GSI e console local.
+Nao corta se a conta provider.steamid for um jogador CT/TR na partida.
+Com provider.steamid ausente ou dados atrasados, aguarda sem executar.
+
+JOGADORES E SLOTS
+Por padrao usa nomes completos do jogo e ignora nomes ambiguos, com
+comandos especiais ou iniciados por numero, devido ao spec_player.
+Se voce NAO usa remapeamento no Spectator Binds do JTs, pode marcar
+Usar slots nativos no Panel para abranger esses jogadores tambem.
+Se usa remapeamento, mantenha desmarcado e confira os nomes no teste.
+
+VISUAL
+Retratos personalizados tem prioridade; ausencia tenta Steam pelo assistente.
+Sem foto utilizavel, aparecem agentes CT/TR. O jogador morto continua com
+o cartao compacto. Ranking e destaque foram ampliados para melhor leitura.
+A Echo/MixES instalada anteriormente e a TheMask estavel sao variantes
+independentes: este pacote nao sobrescreve essas instalacoes.
+
+DIAGNOSTICO
+http://127.0.0.1:23416/director/status mostra o motivo atual no navegador.
+Se mostrar Sem Netcon, confira -netconport 2020 e reinicie o jogo.
+Se os cortes nao forem confirmados, confira a opcao de slots e os nomes.
+O teste automatizado usa TCP/GSI simulados. O uso real no Windows/CS2
+precisa de verificacao no seu computador antes de uma live.

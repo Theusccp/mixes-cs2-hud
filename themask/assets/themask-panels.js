@@ -81,7 +81,7 @@ export function createPanels({onPhotoFailure}={}){
       const existing=new Map([...rows.children].map(row=>[row.dataset.id,row]));
       const nodes=buildRanking(players(state)).map((p,index)=>{
         const row=existing.get(String(p.id))||document.createElement('div');row.className='ranking-row '+p.side;row.dataset.id=String(p.id);
-        if(!row.children.length)row.innerHTML='<span class="rank-pos"></span><img class="rank-photo hex" alt=""><span class="rank-name"></span><b class="rank-kills"></b><b class="rank-deaths"></b><b class="rank-kd"></b>';
+        if(!row.children.length)row.innerHTML='<span class="rank-pos"></span><div class="rank-avatar hex"><img class="rank-photo" alt=""></div><span class="rank-name"></span><b class="rank-kills"></b><b class="rank-deaths"></b><b class="rank-kd"></b>';
         text(row.querySelector('.rank-pos'),index+1);setPortrait(row.querySelector('img'),p,onPhotoFailure);
         text(row.querySelector('.rank-name'),p.name);text(row.querySelector('.rank-kills'),p.kills);
         text(row.querySelector('.rank-deaths'),p.deaths);text(row.querySelector('.rank-kd'),p.kd.toFixed(2));

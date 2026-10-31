@@ -234,3 +234,26 @@ body:not(.demo-mode), body:not(.demo-mode) #stage, body:not(.demo-mode) #stage *
 .eco-right { border-left: 1px solid #ffffff15; }
 .eco-level { display: flex; justify-content: center; gap: 3px; margin-top: 1px; }
 .eco-level i { width: 12px; height: 3px; background: #ffffff24; transform: skewX(-20deg); }.eco-level i.on { background: var(--sc); }
+
+/* 1.6: larger round-break statistics and a prominent player highlight. */
+#themask-ranking { width: 400px; }
+#themask-ranking header { height: 42px; }
+#themask-ranking header strong { font-size: 21px; }
+.ranking-labels { grid-template-columns: 1fr 32px 32px 52px; font-size: 12px; }
+.ranking-row { grid-template-columns: 20px 36px minmax(0,1fr) 32px 32px 52px; height: 44px; }
+.ranking-row .rank-photo { width: 36px; height: 40px; }
+.ranking-row .rank-name { font-size: 19px; }
+.ranking-row b { font-size: 21px; }
+#themask-mvp { width: 318px; height: 390px; }
+#themask-mvp header strong { font-size: 25px; }
+.mvp-photo { width: 226px; height: 278px; top: 70px; right: 6px; }
+.mvp-totals { top: 91px; gap: 14px; }
+.mvp-totals div { width: 76px; padding: 8px 5px; }
+.mvp-totals span { font-size: 12px; }
+.mvp-totals b { font-size: 43px; }
+.mvp-identity b { font-size: 32px; }
+.mvp-identity span { font-size: 14px; }
+.pc-av img.agent-portrait, .ob-av img.agent-portrait { width: 180%; height: 180%; align-self: start; justify-self: center; object-fit: cover; object-position: center top; }
+.ranking-row .rank-avatar { width: 36px; height: 40px; overflow: hidden; display: grid; place-items: start center; }
+.ranking-row .rank-photo.agent-portrait { width: 200%; height: 200%; max-width: none; object-fit: cover; object-position: center top; }
+.mvp-photo.agent-portrait { object-fit: cover; object-position: center top; }

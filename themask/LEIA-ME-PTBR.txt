@@ -1,7 +1,7 @@
-THE MASK CUP — BROADCAST HUD 1.5.1
+THE MASK CUP — BROADCAST HUD 1.6.0
 
 INSTALAÇÃO NO JTs
-1. Importe TheMask-HUD-v1.5.1.zip em HUDs > Import HUD, sem descompactar.
+1. Importe TheMask-HUD-v1.6.zip em HUDs > Import HUD, sem descompactar.
 2. Inicie The Mask Cup — Broadcast.
 3. Copie a URL para uma fonte Navegador do OBS, em 1920 x 1080.
 4. Cadastre jogadores, fotos e times no JTs. Os dados vêm da mesma integração GSI usada pela Echo.
@@ -46,7 +46,9 @@ Mais detalhes em assistente/LEIA-ME.txt. O ajuste nativo requer teste no Windows
 FOTOS
 O padrão preenche o hexágono. Para retratos PNG de corpo, marque
 Encaixar foto inteira e ajuste o tamanho entre 70 e 160.
-Fotos ausentes mostram a logo TheMask; times sem logo mostram sua sigla.
+Fotos ausentes usam agentes CT/TR quando a foto Steam também falta.
+Times sem logo continuam mostrando sua sigla.
+Ranking e destaque foram ampliados para melhorar a leitura.
 Avatares da Steam usam a versão full quando disponível. Fotos personalizadas
 mantêm a URL original, sem filtro de nitidez ou compressão pela HUD.
 Para retrato, use o PNG original em 800 x 834 ou maior na proporção 400:417.

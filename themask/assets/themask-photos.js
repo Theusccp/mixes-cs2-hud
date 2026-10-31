@@ -55,15 +55,17 @@ export function createPortraits({api,apiBase,onChange,fetchImpl=fetch,now=()=>Da
 }
 
 export function setPortrait(element,player,onFailure=()=>{}){
-  const candidates=[...new Set([...(player.avatar_candidates||[]),player.avatar,'./assets/themask-logo-256.webp'].filter(Boolean))];
+  const fallback=player.side==='T'?'./assets/default-t-f42d6f37.png':'./assets/default-ct-f3624238.png';
+  const candidates=[...new Set([...(player.avatar_candidates||[]),player.avatar,fallback].filter(Boolean))];
   const key=String(player.id)+':'+candidates.join('|');
   if(element.dataset.portraitKey===key)return;
   element.dataset.portraitKey=key;
   let index=0;
   element.onerror=()=>{
     if(index===0)onFailure(player);
-    if(++index<candidates.length)element.src=candidates[index];
+    if(++index<candidates.length)apply();
     else element.onerror=null;
   };
-  element.style.display='';element.src=candidates[0];
+  function apply(){element.classList.toggle('agent-portrait',candidates[index]===fallback);element.src=candidates[index];}
+  element.style.display='';apply();
 }

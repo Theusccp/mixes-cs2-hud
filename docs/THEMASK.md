@@ -5,7 +5,7 @@ Variante independente da MixES, baseada na referência visual fornecida pelo usu
 ## Instalar no JTs e OBS
 
 1. Gere o pacote em Windows com `py -3 scripts/package-themask.py` ou, em Linux/macOS, com `python3 scripts/package-themask.py`.
-2. No JTs, importe `dist/TheMask-HUD-v1.5.1.zip`, sem descompactar.
+2. No JTs, importe `dist/TheMask-HUD-v1.6.zip`, sem descompactar.
 3. Inicie **The Mask Cup — Broadcast**. Cadastre times, logos, jogadores e fotos no gerenciador como na Echo/MixES.
 4. Copie a URL para uma fonte Navegador do OBS, em **1920 × 1080**.
 5. Abra o painel da HUD no JTs para configurar nome do campeonato, cores, melhor de, tamanho e encaixe das fotos.
@@ -92,3 +92,9 @@ Referência visual e marca: The Mask Cup, fornecidas pelo usuário. Integração
 ## Pacote de importação 1.5.1
 
 O ZIP entregue da v1.5 estava truncado, sem o registro final do diretório ZIP. O pacote foi reconstruído dos arquivos do repositório. O empacotador agora grava em arquivo temporário, fecha e sincroniza a escrita, confere CRC e conteúdo de todas as entradas e só então publica o nome final. A cópia salva da entrega 1.5.1 foi recuperada e comparada com o arquivo local por tamanho e SHA256. O teste `tests/themask-import.cjs`, executado com `adm-zip` 0.5.16 e o fonte atual `hud.routes.ts` do JTs, extraiu e comparou os 94 arquivos pelo próprio handler de importação; um ZIP truncado foi rejeitado pelo mesmo handler.
+
+## Retratos e estatísticas 1.6
+
+Quando não há foto cadastrada nem avatar Steam utilizável, as fotos dos jogadores usam os agentes CT/TR originais da Echo como reserva, inclusive no ranking e no destaque. A tabela passou a 400 px com linhas de 44 px; o destaque passou a 318 × 390 px, com retrato e números maiores.
+
+O teste de diretor automático está em uma variante Echo independente, gerada com `python3 scripts/package-echo-spec.py`. Consulte `docs/ECHO-AUTOSPEC-LEIA-ME.txt`. A TheMask normal não ativa cortes automáticos. O assistente compartilhado inclui o serviço, mas só a Echo de teste envia quadros e controles do diretor.

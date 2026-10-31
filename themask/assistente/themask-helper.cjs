@@ -3,6 +3,7 @@ const http=require('node:http');
 const fs=require('node:fs');
 const path=require('node:path');
 const {spawn}=require('node:child_process');
+const {createAutoSpec}=require('./auto-director.cjs');
 
 const validID=id=>/^765\d{14}$/.test(id);
 function avatarFromXML(xml){
@@ -36,7 +37,7 @@ function createAvatarStore({fetchText,cachePath,now=()=>Date.now()}={}){
     try{return await task;}finally{pending.delete(id);}
   };
 }
-function createHelper({getAvatar=createAvatarStore(),port=23416}={}){
+function createHelper({getAvatar=createAvatarStore(),port=23416,autoSpec=createAutoSpec()}={}){
   const server=http.createServer(async(req,res)=>{
     const origin=req.headers.origin;
     const originOK=!origin||/^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(origin);
@@ -44,12 +45,21 @@ function createHelper({getAvatar=createAvatarStore(),port=23416}={}){
     if(!originOK||!hostOK){res.writeHead(403);return res.end();}
     if(origin)res.setHeader('Access-Control-Allow-Origin',origin);
     res.setHeader('Vary','Origin');res.setHeader('Access-Control-Allow-Private-Network','true');
-    res.setHeader('Access-Control-Allow-Methods','GET, OPTIONS');
+    res.setHeader('Access-Control-Allow-Methods','GET, POST, OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers','Content-Type');
     res.setHeader('Content-Type','application/json; charset=utf-8');res.setHeader('Cache-Control','no-store');
     if(req.method==='OPTIONS'){res.writeHead(204);return res.end();}
-    if(req.method!=='GET'){res.writeHead(405);return res.end('{}');}
     const pathname=new URL(req.url,'http://localhost').pathname;
-    if(pathname==='/health')return res.end(JSON.stringify({service:'themask-helper',version:'1.5.0'}));
+    if(req.method==='POST'&&pathname==='/director/frame'){
+      if(!String(req.headers['content-type']||'').startsWith('application/json')){res.writeHead(415);return res.end('{}');}
+      try{
+        let body='';for await(const chunk of req){body+=chunk;if(body.length>65536)throw Error('Too large');}
+        return res.end(JSON.stringify(await autoSpec.frame(JSON.parse(body))));
+      }catch{res.writeHead(400);return res.end('{}');}
+    }
+    if(req.method!=='GET'){res.writeHead(405);return res.end('{}');}
+    if(pathname==='/director/status')return res.end(JSON.stringify(autoSpec.status()));
+    if(pathname==='/health')return res.end(JSON.stringify({service:'themask-helper',version:'1.6.0'}));
     const id=pathname.match(/^\/avatar\/(765\d{14})$/)?.[1];
     if(!id){res.writeHead(404);return res.end('{}');}
     try{res.end(JSON.stringify({steam:await getAvatar(id)}));}
@@ -63,7 +73,8 @@ if(require.main===module){
   let mouse;
   server.on('error',error=>{console.error(error.code==='EADDRINUSE'?'O assistente ja esta aberto (porta 23416).':error.message);process.exitCode=1;});
   server.listen(23416,'127.0.0.1',()=>{
-    console.log('TheMask 1.5: fotos Steam automaticas ativas. Deixe esta janela aberta.');
+    console.log('TheMask 1.6: fotos Steam e AutoSpec disponiveis. Deixe esta janela aberta.');
+    console.log('Echo teste: Alt+Shift+A automatico, Alt+Shift+M manual, Alt+Shift+D simulacao.');
     console.log('Apos iniciar a HUD, use Alt+Tab e selecione Counter-Strike 2 uma vez.');
     if(process.platform==='win32'){
       mouse=spawn('powershell.exe',['-NoProfile','-ExecutionPolicy','Bypass','-File',path.join(__dirname,'TheMask-Mouse.ps1')],{stdio:'inherit',windowsHide:true});
