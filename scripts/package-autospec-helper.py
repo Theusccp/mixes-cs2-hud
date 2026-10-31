@@ -7,7 +7,7 @@ import zipfile
 
 ROOT=Path(__file__).resolve().parents[1]
 SOURCE=ROOT/'themask'/'assistente'
-OUTPUT=ROOT/'dist'/'AutoSpec-Assistente-SEM-TOOLS-v0.2.zip'
+OUTPUT=ROOT/'dist'/'AutoSpec-Assistente-SEM-TOOLS-v0.3.zip'
 
 def main():
     OUTPUT.parent.mkdir(exist_ok=True)

@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="pt-BR">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AutoSpec · TheMask</title>
+<style>
+:root{color-scheme:dark;font-family:system-ui,sans-serif;background:#0c1016;color:#edf1f7}
+body{max-width:720px;margin:48px auto;padding:0 24px}small{color:#a8b5c8}h1{font-size:32px;margin:8px 0}p{line-height:1.6;color:#becadb}
+.card{padding:24px;background:#161e29;border:1px solid #29374b;border-radius:16px;margin:24px 0}
+.buttons{display:flex;flex-wrap:wrap;gap:12px}button{font:600 16px system-ui;cursor:pointer;padding:13px 18px;border-radius:9px;border:1px solid #405575;background:#26354a;color:white}
+button[aria-pressed=true]{background:#267bc0;border-color:#78c2ff}button:disabled{opacity:.5;cursor:wait}
+#mode{font-size:22px;font-weight:700}#connection{margin-top:18px}#reason{margin:12px 0 0;color:white}dl{display:grid;grid-template-columns:140px 1fr;gap:12px}dt{color:#9fadc1}dd{margin:0;overflow-wrap:anywhere}
+details{margin-top:20px}pre{white-space:pre-wrap;overflow-wrap:anywhere;font-size:12px;color:#a8b5c8}#error{color:#ffb3a7}a{color:#8acbff}
+</style>
+<small>THEMASK · ASSISTENTE 0.3</small>
+<h1>Diretor de câmera</h1>
+<p>Escolha o modo aqui. Depois volte ao CS2, feche o console e mantenha o jogo em foco para executar as trocas.</p>
+<div class="card">
+  <div class="buttons">
+    <button data-mode="auto" aria-pressed="false">Automático</button>
+    <button data-mode="preview" aria-pressed="false">Simular</button>
+    <button data-mode="off" aria-pressed="false">Manual / parar</button>
+  </div>
+  <p id="error" role="alert"></p>
+  <div id="mode">Conectando ao assistente…</div>
+  <p id="reason" role="status" aria-live="polite"></p>
+  <div id="connection"></div>
+  <dl><dt>Mapa / fase</dt><dd id="map">—</dd><dt>Jogadores</dt><dd id="players">—</dd><dt>Alvo sugerido</dt><dd id="target">—</dd><dt>Controle</dt><dd id="source">—</dd></dl>
+</div>
+<p>“Sem dados da HUD” indica que o assistente está aberto, mas não recebe a partida. Abra a <strong>TheMask — Echo AutoSpec TESTE</strong> no JTs. A TheMask comum não envia esses dados.</p>
+<p>Os botões deste painel funcionam sem o atalho da HUD. Uma ação explícita no JTs também pode mudar o modo. O F10 deve estar configurado no CS2 com <code>bind F10 "exec themask_autospec_bridge"</code>.</p>
+<details><summary>Diagnóstico para copiar</summary><pre id="diagnostic"></pre></details>
+<script>
+const el=id=>document.getElementById(id),buttons=[...document.querySelectorAll('[data-mode]')];
+let changing=false,polling=false;
+function render(s){
+  const names={auto:'Automático selecionado',preview:'Simulação selecionada',off:'Manual'};
+  el('mode').textContent=names[s.mode]||s.mode;
+  el('reason').textContent=s.reason;
+  el('connection').textContent=s.feed?.connected?'● Dados da HUD recebidos agora':'○ Sem dados recentes da HUD';
+  el('connection').style.color=s.feed?.connected?'#7adba6':'#f0c06a';
+  el('map').textContent=[s.feed?.map,s.feed?.phase].filter(Boolean).join(' / ')||'—';
+  el('players').textContent=s.feed?.players??0;
+  el('target').textContent=s.suggestion?[s.suggestion.name,s.suggestion.reason].join(' · '):'—';
+  el('source').textContent=s.control_source==='helper'?'Painel do assistente':'Botão / atalho da HUD';
+  el('diagnostic').textContent=JSON.stringify(s,null,2);
+  buttons.forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.mode===s.mode)));
+}
+async function request(url,options){
+  const r=await fetch(url,{...options,signal:AbortSignal.timeout(3000)});
+  if(!r.ok)throw Error('Assistente respondeu com erro '+r.status);
+  return r.json();
+}
+buttons.forEach(b=>b.addEventListener('click',async()=>{
+  if(changing)return;changing=true;buttons.forEach(b=>b.disabled=true);el('error').textContent='';
+  try{render(await request('/director/control',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({mode:b.dataset.mode})}));}
+  catch(e){el('error').textContent='Não foi possível mudar o modo. '+e.message;}
+  finally{changing=false;buttons.forEach(b=>b.disabled=false);}
+}));
+async function refresh(){
+  if(changing||polling)return;polling=true;
+  try{const s=await request('/director/status');if(!changing)render(s);el('error').textContent='';}
+  catch{el('error').textContent='Assistente desconectado. Deixe INICIAR-AUTOSPEC-SEM-TOOLS.cmd aberto.';}
+  finally{polling=false;}
+}
+refresh();setInterval(refresh,1000);
+</script>
+</html>

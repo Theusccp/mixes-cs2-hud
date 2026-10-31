@@ -80,7 +80,7 @@ function createDirector({now=()=>Date.now()}={}){
     lastCut=time;pending={id:best.id,at:time};reason='Corte: '+best.name+' ('+best.label+')';
     return {command:best.command,id:best.id,name:best.name,reason:best.label};
   }
-  return {update,status:()=>({enabled,reason,suggestion}),reset(){pending=null;lastSeen='';manualUntil=0;lastCut=-Infinity;}};
+  return {update,status:()=>({enabled,reason,suggestion}),reset(){pending=null;lastSeen='';manualUntil=0;lastCut=-Infinity;enabled=false;suggestion=null;}};
 }
 
 function sendNetcon(command,{port=2020,connect=net.createConnection,isCurrent=()=>true}={}){
@@ -92,11 +92,26 @@ function sendNetcon(command,{port=2020,connect=net.createConnection,isCurrent=()
 }
 function createAutoSpec({send=sendNetcon,now=()=>Date.now(),log=console.log,transport='netcon'}={}){
   const director=createDirector({now});let paused=false,busy=false,mode='off',reason='Desligado',lastLog='',lastFrame=-Infinity,owner='',blockedUntil=0,generation=0;
+  let localControl=false,feed=null;
+  function activate(value,client){
+    if(!['off','auto','preview'].includes(value))throw Error('Invalid mode');
+    owner=client;mode=value;paused=false;director.reset();lastFrame=-Infinity;blockedUntil=0;generation++;
+    reason=value==='off'?'Manual':'Aguardando dados da HUD';
+  }
   return {
+    control(value){
+      activate(value,'local-panel');localControl=true;
+      log('[AutoSpec] Painel do assistente: '+value);
+      return this.status();
+    },
     async frame(frame){
       if(!frame||typeof frame!=='object')throw Error('Invalid frame');
+      feed={received_at:now(),sent_at:frame.sent_at,map:String(frame.map||'').slice(0,80),
+        phase:String(frame.phase||'').slice(0,40),players:Array.isArray(frame.players)?frame.players.length:0,
+        hud_mode:String(frame.mode||'').slice(0,20)};
       const client=String(frame.controller_id||'single');
-      if(frame.control===true){owner=client;mode=frame.mode;paused=false;director.reset();lastFrame=-Infinity;blockedUntil=0;generation++;}
+      if(frame.control===true){activate(frame.mode,client);localControl=false;}
+      else if(localControl)frame={...frame,controller_id:'local-panel',mode};
       else if(owner!==client||frame.mode!==mode)return this.status();
       if(paused)return this.status();
       if(now()<blockedUntil)return this.status();
@@ -122,7 +137,14 @@ function createAutoSpec({send=sendNetcon,now=()=>Date.now(),log=console.log,tran
       }
       return this.status();
     },
-    status(){return {...director.status(),enabled:mode==='auto'&&!paused&&director.status().enabled,paused,reason,transport};}
+    status(){
+      const age=feed?Math.max(0,now()-feed.received_at):null;
+      const fresh=age!==null&&age<=2500&&Number.isFinite(feed.sent_at)&&Math.abs(now()-feed.sent_at)<=2500;
+      return {...director.status(),enabled:mode==='auto'&&!paused&&fresh&&director.status().enabled,
+        paused,reason:mode!=='off'&&!paused&&!fresh?'Sem dados recentes da HUD: abra a Echo AutoSpec de teste':reason,
+        transport,mode,control_source:localControl?'helper':'hud',
+        feed:{connected:fresh,age_ms:age,map:feed?.map||'',phase:feed?.phase||'',players:feed?.players||0,hud_mode:feed?.hud_mode||''}};
+    }
   };
 }
 module.exports={createDirector,createAutoSpec,targetCommand,sendNetcon};

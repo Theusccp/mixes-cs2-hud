@@ -50,18 +50,23 @@ function createHelper({getAvatar=createAvatarStore(),port=23416,autoSpec=createA
     res.setHeader('Content-Type','application/json; charset=utf-8');res.setHeader('Cache-Control','no-store');
     if(req.method==='OPTIONS'){res.writeHead(204);return res.end();}
     const pathname=new URL(req.url,'http://localhost').pathname;
-    if(req.method==='POST'&&pathname==='/director/frame'){
+    if(req.method==='POST'&&['/director/frame','/director/control'].includes(pathname)){
       if(!String(req.headers['content-type']||'').startsWith('application/json')){res.writeHead(415);return res.end('{}');}
       try{
         let body='';for await(const chunk of req){body+=chunk;if(body.length>65536)throw Error('Too large');}
-        const frame=JSON.parse(body),status=await autoSpec.frame(frame);
-        if(frame.control===true&&frame.mode==='off'&&!status.enabled)try{onManual();}catch{}
+        const frame=JSON.parse(body),isControl=pathname==='/director/control';
+        const status=isControl?autoSpec.control(frame.mode):await autoSpec.frame(frame);
+        if((isControl||frame.control===true)&&frame.mode==='off'&&!status.enabled)try{onManual();}catch{}
         return res.end(JSON.stringify(status));
       }catch{res.writeHead(400);return res.end('{}');}
     }
     if(req.method!=='GET'){res.writeHead(405);return res.end('{}');}
+    if(pathname==='/director'||pathname==='/'){
+      res.setHeader('Content-Type','text/html; charset=utf-8');
+      return res.end(fs.readFileSync(path.join(__dirname,'autospec-panel.html'),'utf8'));
+    }
     if(pathname==='/director/status')return res.end(JSON.stringify(autoSpec.status()));
-    if(pathname==='/health')return res.end(JSON.stringify({service:'themask-helper',version:'1.6.1'}));
+    if(pathname==='/health')return res.end(JSON.stringify({service:'themask-helper',version:'1.6.2',autospec:'0.3'}));
     const id=pathname.match(/^\/avatar\/(765\d{14})$/)?.[1];
     if(!id){res.writeHead(404);return res.end('{}');}
     try{res.end(JSON.stringify({steam:await getAvatar(id)}));}
@@ -83,9 +88,11 @@ if(require.main===module){
   let mouse;
   server.on('error',error=>{console.error(error.code==='EADDRINUSE'?'O assistente ja esta aberto (porta 23416).':error.message);bridge?.close();process.exitCode=1;});
   const start=()=>server.listen(23416,'127.0.0.1',()=>{
-    console.log('TheMask / AutoSpec 0.2: fotos Steam e diretor disponiveis. Deixe esta janela aberta.');
+    console.log('TheMask / AutoSpec 0.3: fotos Steam e diretor disponiveis. Deixe esta janela aberta.');
     console.log(keyboardMode?'Transporte: TECLADO F10 / CS2 em foco. Sem Netcon e sem -tools.':'Transporte: Netcon legado / porta 2020.');
     console.log('Echo teste: Alt+Shift+A automatico, Alt+Shift+M manual, Alt+Shift+D simulacao.');
+    console.log('CONTROLE DIRETO: http://127.0.0.1:23416/director');
+    console.log('Abra o endereco e clique Automatico. O painel informa se os dados da HUD chegam.');
     console.log('Apos iniciar a HUD, use Alt+Tab e selecione Counter-Strike 2 uma vez.');
     if(process.platform==='win32'){
       mouse=spawn('powershell.exe',['-NoProfile','-ExecutionPolicy','Bypass','-File',path.join(__dirname,'TheMask-Mouse.ps1')],{stdio:'inherit',windowsHide:true});

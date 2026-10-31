@@ -62,3 +62,25 @@ test('manual prevalece sobre outra fonte OBS e reativação recupera falha Netco
   const other={...f,controller_id:'obs',mode:'auto',control:false};time+=500;other.sent_at=time;await auto.frame(other);assert.equal(calls,1);
   f.mode='auto';f.sent_at=time;f.control=true;await auto.frame(f);assert.equal(calls,2);
 });
+
+test('painel local ativa com HUD em manual, confirma câmera e respeita parada explícita',async()=>{
+  let time=10000,calls=0;
+  const auto=createAutoSpec({now:()=>time,log:()=>{},send:async()=>{calls++;}});
+  const f=fixture(time);f.mode='off';f.bomb={state:'defusing',player:ids[1]};
+  await auto.frame(f);assert.equal(auto.status().enabled,false);
+  assert.equal(auto.status().feed.connected,true);
+  assert.equal(auto.control('auto').mode,'auto');
+  await auto.frame(f);assert.equal(calls,1);assert.equal(auto.status().enabled,true);
+  assert.equal(auto.status().control_source,'helper');
+  time+=500;f.sent_at=time;f.observed=ids[1];await auto.frame(f);
+  assert.equal(auto.status().paused,false);assert.equal(calls,1);
+  auto.control('preview');time+=500;f.sent_at=time;f.bomb.player=ids[2];await auto.frame(f);
+  assert.equal(calls,1);assert.equal(auto.status().suggestion.id,ids[2]);
+  auto.control('auto');f.control=true;f.mode='off';await auto.frame(f);
+  assert.equal(auto.status().mode,'off');assert.equal(auto.status().control_source,'hud');
+  f.control=false;f.controller_id='old-obs';f.mode='auto';time+=500;f.sent_at=time;
+  await auto.frame(f);assert.equal(calls,1);assert.equal(auto.status().mode,'off');
+  assert.throws(()=>auto.control('invalid'));
+  auto.control('auto');time+=3000;assert.equal(auto.status().feed.connected,false);
+  assert.equal(auto.status().enabled,false);assert.match(auto.status().reason,/Sem dados/);
+});

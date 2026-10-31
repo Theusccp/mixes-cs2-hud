@@ -58,3 +58,22 @@ test('HUD prioriza foto cadastrada, consulta Steam ausente e recupera foto quebr
   const other='76561198000000000';done=updated();portraits.failed({id:other,avatar:'http://localhost:23415/broken.png'});await done;
   assert.equal(helperCalls,2);
 });
+
+test('painel local funciona sem ação da HUD e parada neutraliza ponte',async()=>{
+  let cleared=0;
+  const server=createHelper({port:0,onManual:()=>cleared++});
+  await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));
+  const base='http://127.0.0.1:'+server.address().port;
+  const post=body=>fetch(base+'/director/control',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+  try{
+    const page=await fetch(base+'/director');assert.match(page.headers.get('content-type'),/text\/html/);
+    assert.match(await page.text(),/data-mode="auto"/);
+    let r=await post({mode:'auto'}),s=await r.json();
+    assert.equal(s.mode,'auto');assert.equal(s.feed.connected,false);assert.equal(s.control_source,'helper');
+    r=await post({mode:'preview'});assert.equal((await r.json()).mode,'preview');
+    r=await post({mode:'off'});assert.equal((await r.json()).mode,'off');assert.equal(cleared,1);
+    assert.equal((await post({mode:'quit'})).status,400);
+    r=await fetch(base+'/director/control');assert.equal(r.status,404);
+    r=await fetch(base+'/director/control',{method:'POST',headers:{'Content-Type':'application/json',Origin:'https://other.example'},body:'{"mode":"auto"}'});assert.equal(r.status,403);
+  }finally{await new Promise(resolve=>server.close(resolve));}
+});

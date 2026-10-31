@@ -9,7 +9,7 @@ import zipfile
 
 ROOT=Path(__file__).resolve().parents[1]
 BUILD=ROOT/'dist'/'echo-spec-source'
-OUTPUT=ROOT/'dist'/'Echo-TheMask-AutoSpec-TESTE-v0.2.zip'
+OUTPUT=ROOT/'dist'/'Echo-TheMask-AutoSpec-TESTE-v0.3.zip'
 
 def main():
     if BUILD.exists():shutil.rmtree(BUILD)
@@ -38,7 +38,7 @@ def main():
 html, body, #root, #root * { cursor: none; pointer-events: none; user-select: none; }
 ''')
     manifest=json.loads((BUILD/'hud.json').read_text())
-    manifest.update(name='TheMask — Echo AutoSpec TESTE',version='0.2.0-autospec',author='TheMask | Base Echo/cshuds.com')
+    manifest.update(name='TheMask — Echo AutoSpec TESTE',version='0.3.0-autospec',author='TheMask | Base Echo/cshuds.com')
     (BUILD/'hud.json').write_text(json.dumps(manifest,ensure_ascii=False,indent=2)+'\n')
     panel=json.loads((BUILD/'panel.json').read_text())
     for section in panel:section['label']=section['label'].replace('MixES','TheMask')
