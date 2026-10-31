@@ -55,7 +55,7 @@ export function createPortraits({api,apiBase,onChange,fetchImpl=fetch,now=()=>Da
 }
 
 export function setPortrait(element,player,onFailure=()=>{}){
-  const fallback=player.side==='T'?'./assets/default-t-f42d6f37.png':'./assets/default-ct-f3624238.png';
+  const fallback=player.side==='T'?'./assets/themask-agent-tr-v2.webp':'./assets/themask-agent-ct-v2.webp';
   const candidates=[...new Set([...(player.avatar_candidates||[]),player.avatar,fallback].filter(Boolean))];
   const key=String(player.id)+':'+candidates.join('|');
   if(element.dataset.portraitKey===key)return;

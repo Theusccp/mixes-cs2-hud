@@ -9,13 +9,13 @@ import zipfile
 
 ROOT=Path(__file__).resolve().parents[1]
 BUILD=ROOT/'dist'/'echo-spec-source'
-OUTPUT=ROOT/'dist'/'Echo-TheMask-AutoSpec-TESTE-v0.3.zip'
+OUTPUT=ROOT/'dist'/'Echo-TheMask-AutoSpec-TESTE-v0.5.zip'
 
 def main():
     if BUILD.exists():shutil.rmtree(BUILD)
     shutil.copytree(ROOT/'hud',BUILD)
     assets=BUILD/'assets'
-    for name in ['auto-spec-client.js','echo-spec.js','themask-photos.js','themask-state.js','themask-logo-256.webp']:
+    for name in ['auto-spec-client.js','echo-spec.js','themask-photos.js','themask-state.js','themask-logo-256.webp','themask-agent-ct-v2.webp','themask-agent-tr-v2.webp']:
         shutil.copy2(ROOT/'themask'/'assets'/name,assets/name)
     shutil.copytree(ROOT/'themask'/'assistente',BUILD/'assistente',ignore=shutil.ignore_patterns('cache'))
     (BUILD/'cfg').mkdir(exist_ok=True)
@@ -35,10 +35,18 @@ def main():
 .mvp { transform: scale(1.2); transform-origin: top right; }
 .mvp .mvp-content .mvp-avatar { width: 245px; height: 252px; }
 .mvp .mvp-content .mvp-name { font-size: 49px; max-width: 210px; overflow: hidden; text-overflow: ellipsis; }
+/* The illustrated busts already have safe framing; never reuse the model zoom. */
+.player-container .player-frame .player-avatar img.themask-agent-portrait,
+.observed .observed-content .observed-avatar img.themask-agent-portrait,
+.mvp .mvp-content .mvp-avatar img.themask-agent-portrait,
+.scoreboard .sb-player .sbp-avatar img.themask-agent-portrait {
+  width: 100%; height: 100%; max-width: 100%; object-fit: contain;
+  object-position: center bottom; flex-shrink: 0;
+}
 html, body, #root, #root * { cursor: none; pointer-events: none; user-select: none; }
 ''')
     manifest=json.loads((BUILD/'hud.json').read_text())
-    manifest.update(name='TheMask — Echo AutoSpec TESTE',version='0.3.0-autospec',author='TheMask | Base Echo/cshuds.com')
+    manifest.update(name='TheMask — Echo AutoSpec TESTE',version='0.5.0-autospec',author='TheMask | Base Echo/cshuds.com')
     (BUILD/'hud.json').write_text(json.dumps(manifest,ensure_ascii=False,indent=2)+'\n')
     panel=json.loads((BUILD/'panel.json').read_text())
     for section in panel:section['label']=section['label'].replace('MixES','TheMask')
@@ -53,6 +61,7 @@ html, body, #root, #root * { cursor: none; pointer-events: none; user-select: no
     keys += [{'bind':'Alt+Shift+A','action':'autoSpecToggle'},{'bind':'Alt+Shift+M','action':'autoSpecOff'},{'bind':'Alt+Shift+D','action':'autoSpecPreview'}]
     (BUILD/'keybinds.json').write_text(json.dumps(keys,indent=2)+'\n')
     shutil.copy2(ROOT/'docs'/'ECHO-AUTOSPEC-LEIA-ME.txt',BUILD/'LEIA-ME-AUTOSPEC.txt')
+    shutil.copy2(ROOT/'themask'/'AVATARES.md',BUILD/'AVATARES.md')
     temporary=OUTPUT.with_suffix('.zip.tmp')
     try:
         with open(temporary,'wb') as target:

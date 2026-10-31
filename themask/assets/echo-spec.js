@@ -20,11 +20,15 @@ export function installEchoSpec({game,actions,config,api,apiBase}){
   const watch=new MutationObserver(()=>{
     document.querySelectorAll('.player-avatar img,.observed-avatar img,.mvp-avatar img,.sbp-avatar img').forEach(img=>{
       if(img.dataset.echoFallback===img.getAttribute('src'))return;
+      const stock=img.src.match(/\/default-(ct|t)-[^/]+\.png(?:\?.*)?$/i);
+      const portrait=side=>new URL(side==='T'?'./themask-agent-tr-v2.webp':'./themask-agent-ct-v2.webp',import.meta.url).href;
+      if(stock){img.classList.remove('mixes-player-photo');img.src=portrait(stock[1].toLowerCase()==='t'?'T':'CT');}
+      img.classList.toggle('themask-agent-portrait',/\/themask-agent-(ct|tr)-v2\.webp$/.test(img.src));
       img.dataset.echoFallback=img.getAttribute('src')||'';
       img.onerror=()=>{
         const parent=img.closest('.player-container,.observed,.mvp,.sb-player');
         const side=parent?.classList.contains('T')?'T':'CT';
-        const fallback=new URL(side==='T'?'./default-t-f42d6f37.png':'./default-ct-f3624238.png',import.meta.url).href;
+        const fallback=portrait(side);
         if(img.src!==fallback){img.classList.remove('mixes-player-photo');img.src=fallback;}
       };
     });

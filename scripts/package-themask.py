@@ -10,7 +10,7 @@ import zipfile
 
 ROOT = Path(__file__).resolve().parents[1]
 HUD = ROOT / 'themask'
-OUTPUT = ROOT / 'dist' / 'TheMask-HUD-v1.6.zip'
+OUTPUT = ROOT / 'dist' / 'TheMask-HUD-v1.7.zip'
 
 def main():
     for name in ['hud.json','panel.json','keybinds.json','index.html','thumb.png',
@@ -20,6 +20,7 @@ def main():
                  'assets/themask-radar.js','assets/themask-radar-maps.json','assets/themask-panels.js',
                  'assets/themask-motion.js','assets/themask-photos.js',
                  'assets/default-ct-f3624238.png','assets/default-t-f42d6f37.png',
+                 'assets/themask-agent-ct-v2.webp','assets/themask-agent-tr-v2.webp',
                  'assistente/auto-director.cjs',
                  'assistente/themask-helper.cjs','assistente/INICIAR-THEMASK.cmd',
                  'assistente/LEIA-ME.txt','assistente/Iniciar-TheMask.ps1','assistente/TheMask-Mouse.ps1',
