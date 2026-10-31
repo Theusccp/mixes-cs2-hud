@@ -97,7 +97,11 @@ export function createPanels({onPhotoFailure}={}){
     if(mvpVisible){
       mvp.classList.toggle('CT',highlight.side==='CT');mvp.classList.toggle('T',highlight.side==='T');
       const current=players(state).find(player=>player.id===highlight.id);
-      setPortrait(mvp.querySelector('.mvp-photo'),{...highlight,avatar:current?.avatar||highlight.avatar,avatar_candidates:current?.avatar_candidates||highlight.avatar_candidates},onPhotoFailure);
+      setPortrait(mvp.querySelector('.mvp-photo'),{...highlight,
+        avatar:current?current.avatar:highlight.avatar,
+        avatar_candidates:current?current.avatar_candidates:highlight.avatar_candidates,
+        custom_avatar_candidates:current?current.custom_avatar_candidates:highlight.custom_avatar_candidates,
+        portrait_mode:state.portrait_mode||current?.portrait_mode||highlight.portrait_mode},onPhotoFailure);
       text(mvp.querySelector('.mvp-name'),highlight.name);text(mvp.querySelector('.mvp-real-name'),highlight.real_name);
       text(mvp.querySelector('.mvp-kills'),highlight.round_kills);text(mvp.querySelector('.mvp-damage'),highlight.round_dmg);
       text(mvp.querySelector('.mvp-round'),highlight.round?'RODADA '+highlight.round:'ÚLTIMA RODADA');

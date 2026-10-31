@@ -4,6 +4,12 @@ import { createPortraits } from './themask-photos.js';
 
 export function installTheMask({game, actions, config, api, socket, apiBase}) {
   const portraits=createPortraits({api,apiBase,onChange:()=>rerender()});
+  // The native engine also loads avatar metadata. Keep its Steam URLs identified
+  // so a cached Steam portrait cannot masquerade as a manually registered photo.
+  const avatarLookup=api.players.getAvatarURLs.bind(api.players);
+  api.players.getAvatarURLs=async id=>{
+    const result=await avatarLookup(id);portraits.remember(id,result||{});return result;
+  };
   const renderer = createRenderer({debug:new URLSearchParams(location.search).get('debug') === '1',onPhotoFailure:player=>portraits.failed(player)});
   const stage = document.querySelector('#stage');
   let latest = null, match = null, settings = {}, visible = true, logoVisible = true;
@@ -22,6 +28,8 @@ export function installTheMask({game, actions, config, api, socket, apiBase}) {
   };
   function apply(data = {}) {
     settings = data.themask_settings || {};
+    portraits.setMode(settings.portrait_mode||'custom');
+    if(latest)portraits.request(latest.players||[]);
     for (const [key, css] of [['ct_color','--ct'],['t_color','--t']]) {
       const color = /^#[\da-f]{6}$/i.test(String(settings[key] || '').trim()) ? settings[key].trim()
         : key === 'ct_color' ? '#2B93E0' : '#E4AE35';

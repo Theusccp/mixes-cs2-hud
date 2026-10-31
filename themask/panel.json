@@ -53,6 +53,16 @@
         "label": "Melhor de: 1, 3 ou 5 (se não houver vetos cadastrados)"
       },
       {
+        "type": "select",
+        "name": "portrait_mode",
+        "label": "Fotos dos jogadores — escolha manual",
+        "values": [
+          { "name": "", "label": "Somente fotos cadastradas (padrão)" },
+          { "name": "auto", "label": "Fotos cadastradas + Steam quando faltar foto" },
+          { "name": "agents", "label": "Somente avatares ilustrados CT/TR" }
+        ]
+      },
+      {
         "type": "text",
         "name": "photo_scale",
         "label": "Tamanho das fotos (%): 70 a 160. Padrão: 100"

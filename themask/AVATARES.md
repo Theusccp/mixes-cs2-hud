@@ -1,6 +1,16 @@
 # Avatares ilustrados CT / TR
 
-Os avatares padrão foram criados com geração de imagem integrada, usando as duas artes enviadas como inspiração de estilo. Fotos cadastradas e retratos Steam continuam com prioridade. Os novos avatares são usados quando não há foto utilizável.
+Os avatares padrão foram criados com geração de imagem integrada, usando as duas artes enviadas como inspiração de estilo. O painel permite escolher entre fotos cadastradas, fotos cadastradas com Steam ou somente os desenhos. Nos modos com foto, os avatares ilustrados aparecem quando não há retrato utilizável.
+
+## Escolha manual das fotos
+
+No JTs, abra **Panel → TheMask — Personalização → Fotos dos jogadores — escolha manual**. Selecione uma opção e salve:
+
+- **Somente fotos cadastradas (padrão):** mantém fotos enviadas e usa os avatares ilustrados quando faltar foto. Não consulta Steam.
+- **Fotos cadastradas + Steam quando faltar foto:** habilita a consulta Steam, mantendo fotos enviadas com prioridade. Deixe o assistente local aberto.
+- **Somente avatares ilustrados CT/TR:** mostra os desenhos em todos os jogadores, inclusive no ranking e no MVP.
+
+A seleção é aplicada imediatamente ao receber a configuração salva, inclusive sobre fotos Steam já carregadas. O modo padrão mantém a busca Steam desligada.
 
 Arquivos finais: `assets/themask-agent-ct-v2.webp` e `assets/themask-agent-tr-v2.webp`. Ambos têm 512 × 512 pixels e transparência. Os retratos foram exportados para WebP a partir das artes geradas, sem recortar a cabeça. O enquadramento da HUD usa `contain` e tamanho de 100%, sem o zoom dos modelos antigos.
 

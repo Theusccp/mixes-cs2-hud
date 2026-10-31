@@ -3,7 +3,7 @@ import { playerPhoto } from './themask-state.js';
 // JTs versions that return an empty `steam` field use the optional local assistant.
 export function createPortraits({api,apiBase,onChange,fetchImpl=fetch,now=()=>Date.now()}){
   const entries=new Map();
-  let helper=null,helperUntil=0;
+  let helper=null,helperUntil=0,mode='auto';
   const photo=url=>playerPhoto(url,apiBase);
   async function requestJSON(url,timeout=1800){
     const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),timeout);
@@ -18,6 +18,7 @@ export function createPortraits({api,apiBase,onChange,fetchImpl=fetch,now=()=>Da
     return helper;
   }
   function ensure(player,force=false){
+    if(mode!=='auto')return;
     const id=String(player.id||player.steamid||'');
     if(!/^765\d{14}$/.test(id)||(!force&&photo(player.avatar)))return;
     const old=entries.get(id);
@@ -29,7 +30,7 @@ export function createPortraits({api,apiBase,onChange,fetchImpl=fetch,now=()=>Da
       entry.custom=photo(response.custom);
       entry.steam=photo(response.steam);
       // Some JTs builds return the custom URL in both fields, without a Steam lookup.
-      if((!entry.steam||entry.steam===entry.custom)&&await available()){
+      if((!entry.steam||entry.steam===entry.custom)&&mode==='auto'&&await available()&&mode==='auto'){
         try{entry.steam=photo((await requestJSON('http://127.0.0.1:23416/avatar/'+id,10000)).steam);}catch{}
       }
       entry.pending=false;
@@ -40,15 +41,25 @@ export function createPortraits({api,apiBase,onChange,fetchImpl=fetch,now=()=>Da
   function decorate(player){
     if(!player)return player;
     const entry=entries.get(String(player.id));
-    const candidates=[...new Set([photo(player.avatar),entry?.custom,entry?.steam].filter(Boolean))];
-    return {...player,avatar:candidates[0]||'',avatar_candidates:candidates};
+    const supplied=photo(player.avatar);
+    const suppliedIsSteam=supplied&&supplied===entry?.steam&&supplied!==entry?.custom;
+    const custom=[...new Set([suppliedIsSteam?'':supplied,entry?.custom].filter(Boolean))];
+    const candidates=mode==='agents'?[]:mode==='custom'?custom:[...new Set([...custom,entry?.steam].filter(Boolean))];
+    return {...player,avatar:candidates[0]||'',avatar_candidates:candidates,custom_avatar_candidates:custom,portrait_mode:mode};
   }
   return {
+    setMode(value){mode=['auto','agents'].includes(value)?value:'custom';},
+    remember(id,response={}){
+      const entry=entries.get(String(id))||{pending:false,retry:0};
+      entry.custom=photo(response.custom);entry.steam=photo(response.steam);
+      if(entry.steam&&entry.steam!==entry.custom)entry.retry=now()+6*60*60*1000;
+      entries.set(String(id),entry);
+    },
     request(list){for(const player of list)ensure(player);},
     failed(player){const entry=entries.get(String(player.id));if(entry?.pending||entry?.steam)return;if(entry)entry.retry=0;ensure(player,true);},
     decorate(state){
       if(!state.ok)return state;
-      return {...state,left:{...state.left,players:state.left.players.map(decorate)},
+      return {...state,portrait_mode:mode,left:{...state.left,players:state.left.players.map(decorate)},
         right:{...state.right,players:state.right.players.map(decorate)},observed:decorate(state.observed)};
     }
   };
@@ -56,7 +67,9 @@ export function createPortraits({api,apiBase,onChange,fetchImpl=fetch,now=()=>Da
 
 export function setPortrait(element,player,onFailure=()=>{}){
   const fallback=player.side==='T'?'./assets/themask-agent-tr-v2.webp':'./assets/themask-agent-ct-v2.webp';
-  const candidates=[...new Set([...(player.avatar_candidates||[]),player.avatar,fallback].filter(Boolean))];
+  const photos=player.portrait_mode==='agents'?[]:player.portrait_mode==='custom'
+    ?(player.custom_avatar_candidates||[player.avatar]):[...(player.avatar_candidates||[]),player.avatar];
+  const candidates=[...new Set([...photos,fallback].filter(Boolean))];
   const key=String(player.id)+':'+candidates.join('|');
   if(element.dataset.portraitKey===key)return;
   element.dataset.portraitKey=key;

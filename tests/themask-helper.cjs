@@ -77,3 +77,32 @@ test('painel local funciona sem ação da HUD e parada neutraliza ponte',async()
     r=await fetch(base+'/director/control',{method:'POST',headers:{'Content-Type':'application/json',Origin:'https://other.example'},body:'{"mode":"auto"}'});assert.equal(r.status,403);
   }finally{await new Promise(resolve=>server.close(resolve));}
 });
+
+test('escolha manual desativa consultas e retira Steam em cache, inclusive de MVP salvo',async()=>{
+  const source=await readFile(require.resolve('../themask/assets/themask-state.js'),'utf8');
+  const stateURL='data:text/javascript;base64,'+Buffer.from(source).toString('base64');
+  const sourcePhotos=(await readFile(require.resolve('../themask/assets/themask-photos.js'),'utf8')).replace('./themask-state.js',stateURL);
+  const {createPortraits,setPortrait}=await import('data:text/javascript;base64,'+Buffer.from(sourcePhotos).toString('base64'));
+  let calls=0,notify;
+  const photos=createPortraits({onChange:()=>notify?.(),apiBase:'http://localhost:23415/',
+    api:{players:{getAvatarURLs:async()=>{calls++;return {custom:'',steam:avatar};}}}});
+  const player={id,side:'CT',avatar:''};
+  const state={ok:true,left:{players:[player]},right:{players:[]},observed:player};
+  photos.setMode('custom');photos.request([player]);assert.equal(calls,0);
+  assert.equal(photos.decorate(state).observed.avatar,'');
+  photos.setMode('auto');const ready=new Promise(resolve=>notify=resolve);photos.request([player]);await ready;
+  const savedMVP=photos.decorate(state).observed;assert.equal(savedMVP.avatar,avatar);
+  const image={dataset:{},style:{},classList:{toggle(){}},src:''};setPortrait(image,savedMVP);assert.equal(image.src,avatar);
+  photos.setMode('custom');setPortrait(image,{...savedMVP,portrait_mode:'custom'});
+  assert.match(image.src,/themask-agent-ct/);assert.equal(photos.decorate(state).observed.avatar,'');
+  // The compiled engine may supply its own cached Steam URL as player.avatar.
+  photos.remember(id,{custom:'',steam:avatar});
+  assert.equal(photos.decorate({...state,observed:{...player,avatar}}).observed.avatar,'');
+  const custom={...player,avatar:'http://localhost:23415/portrait.png'};
+  const withCustom={...state,left:{players:[custom]},observed:custom};
+  assert.equal(photos.decorate(withCustom).observed.avatar,custom.avatar);
+  photos.setMode('agents');const illustrated=photos.decorate(withCustom).observed;
+  setPortrait(image,illustrated);assert.match(image.src,/themask-agent-ct/);assert.equal(illustrated.avatar,'');
+  photos.setMode('auto');photos.request([player]);assert.equal(calls,1);
+  assert.equal(photos.decorate(state).observed.avatar,avatar);
+});
