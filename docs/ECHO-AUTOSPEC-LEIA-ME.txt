@@ -1,18 +1,36 @@
-ECHO / THEMASK — AUTOSPEC EXPERIMENTAL 0.1
+ECHO / THEMASK — AUTOSPEC EXPERIMENTAL 0.2
 
-PRIMEIRO TESTE
-1. Nas opcoes de inicializacao do CS2 na Steam, ADICIONE -netconport 2020
-   sem apagar suas outras opcoes. Reinicie o CS2.
-2. Importe Echo-TheMask-AutoSpec-TESTE-v0.1.zip no JTs, sem descompactar.
-3. Extraia UMA COPIA do ZIP em uma pasta sua. Com o JTs aberto, execute
-   assistente/INICIAR-THEMASK.cmd desta copia. Feche o assistente antigo
-   antes, pois apenas um usa a porta 23416.
-4. Entre no servidor como ESPECTADOR e inicie a Echo AutoSpec TESTE.
-   Use Alt+Tab para voltar ao CS2. O automatico inicia DESLIGADO.
-5. Alt+Shift+D: simula escolhas no terminal do assistente, sem cortes.
-6. Alt+Shift+A: liga/desliga os cortes automaticos.
-   Alt+Shift+M: volta imediatamente ao manual.
-   Os mesmos botoes aparecem em Panel > AutoSpec no JTs.
+PRIMEIRO TESTE NO WINDOWS NORMAL
+1. Remova -tools das opcoes de inicializacao e reinicie o CS2 normal.
+   O modo teclado nao precisa de -netconport e nao tenta mudar regras VAC.
+2. Mantenha a Echo AutoSpec de teste instalada no JTs (0.1 ou 0.2).
+3. Extraia o assistente atualizado em uma pasta sua. Abra CS2 e JTs.
+   Feche o assistente anterior e execute assistente/INICIAR-AUTOSPEC-SEM-TOOLS.cmd.
+4. No console do CS2 execute uma vez:
+   bind F10 "exec themask_autospec_bridge"
+   F10 fica reservado. Se tinha outra funcao nessa tecla, anote-a antes.
+5. Como espectador, feche o console e mantenha o CS2 em foco.
+   Alt+Shift+D: simular; Alt+Shift+A: ligar/desligar; Alt+Shift+M: manual.
+
+PONTE POR TECLADO
+O assistente detecta a pasta game/csgo/cfg pelo cs2.exe em execucao,
+escreve somente themask_autospec_bridge.cfg e envia F10 para executar.
+O conteudo aceito e restrito aos comandos de espectador gerados pelo diretor.
+Nao substitui configs existentes que nao tenham a assinatura deste projeto.
+Ao dar Alt+Tab ou segurar Alt/Shift/Ctrl/Win, aguarda sem enviar atalhos.
+Volta a tentar quando o CS2 estiver em foco. Para operar o OBS nesse modo,
+use atalhos globais mantendo o CS2 selecionado. Nao controla o jogo em fundo.
+No modo manual/ao encerrar o assistente, tenta neutralizar o arquivo gerado.
+Nao modifica memoria, DLLs ou o executavel do jogo. Nao ha garantia geral
+sobre politicas de plataformas externas; o uso aqui e apenas espectador.
+O Windows pode bloquear a tecla se o jogo estiver em um nivel de privilegio
+superior ao assistente. O envio de tecla precisa de teste no seu Windows.
+
+NETCON LEGADO
+INICIAR-THEMASK.cmd continua oferecendo o transporte Netcon anterior.
+No Windows, o workaround documentado do Netcon usa Workshop Tools/-tools;
+esse modo pode impedir acesso a servidores protegidos e nao e a orientacao
+para a transmissao ao vivo deste usuario. Nao desative a protecao do servidor.
 
 COMO ESCOLHE
 Usa posicoes, direcoes, proximidade de adversarios, dano recente,
@@ -48,7 +66,7 @@ independentes: este pacote nao sobrescreve essas instalacoes.
 
 DIAGNOSTICO
 http://127.0.0.1:23416/director/status mostra o motivo atual no navegador.
-Se mostrar Sem Netcon, confira -netconport 2020 e reinicie o jogo.
+Se usar modo teclado, confira F10 manualmente e feche o console antes do automatico.
 Se os cortes nao forem confirmados, confira a opcao de slots e os nomes.
 O teste automatizado usa TCP/GSI simulados. O uso real no Windows/CS2
 precisa de verificacao no seu computador antes de uma live.

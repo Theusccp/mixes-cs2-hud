@@ -15,13 +15,13 @@ function createDirector({now=()=>Date.now()}={}){
   let previous=new Map(),heat=new Map(),map='',round=null,lastCut=-Infinity,lastSeen='',pending=null,manualUntil=0;
   let enabled=false,reason='Desligado',suggestion=null,lastTime=0;
   function update(frame){
-    const time=now(),list=Array.isArray(frame.players)?frame.players.slice(0,16):[];
+    const time=now(),list=Array.isArray(frame.players)?frame.players.slice(0,64):[];
     const mode=['auto','preview'].includes(frame.mode)?frame.mode:'off';
     const active=list.filter(p=>['CT','T'].includes(p.side));
     const alive=active.filter(p=>p.hp>0&&validID(p.id));
     enabled=mode==='auto';suggestion=null;
     const hold=Math.max(2500,Math.min(7000,Number(frame.hold_ms)||3500));
-    if(!validID(frame.observer)||active.some(p=>p.id===frame.observer)){
+    if(!validID(frame.observer)||(frame.players||[]).some(p=>p.id===frame.observer&&['CT','T'].includes(p.side))){
       reason='Aguardando conta de espectador (provider.steamid)';enabled=false;pending=null;return null;
     }
     if(!Number.isFinite(frame.sent_at)||Math.abs(time-frame.sent_at)>2000){reason='Dados atrasados';pending=null;return null;}
@@ -83,35 +83,46 @@ function createDirector({now=()=>Date.now()}={}){
   return {update,status:()=>({enabled,reason,suggestion}),reset(){pending=null;lastSeen='';manualUntil=0;lastCut=-Infinity;}};
 }
 
-function sendNetcon(command,{port=2020,connect=net.createConnection}={}){
+function sendNetcon(command,{port=2020,connect=net.createConnection,isCurrent=()=>true}={}){
   return new Promise((resolve,reject)=>{
     const socket=connect({host:'127.0.0.1',port}),timer=setTimeout(()=>socket.destroy(Error('Netcon timeout')),1500);
     socket.on('error',error=>{clearTimeout(timer);reject(error);});
-    socket.on('connect',()=>socket.end(command+'\r\n',()=>{clearTimeout(timer);resolve();}));
+    socket.on('connect',()=>{if(!isCurrent())return socket.destroy(Object.assign(Error('Corte cancelado'),{code:'CANCELLED'}));socket.end(command+'\r\n',()=>{clearTimeout(timer);resolve();});});
   });
 }
-function createAutoSpec({send=sendNetcon,now=()=>Date.now(),log=console.log}={}){
-  const director=createDirector({now});let paused=false,busy=false,mode='off',reason='Desligado',lastLog='',lastFrame=-Infinity,owner='';
+function createAutoSpec({send=sendNetcon,now=()=>Date.now(),log=console.log,transport='netcon'}={}){
+  const director=createDirector({now});let paused=false,busy=false,mode='off',reason='Desligado',lastLog='',lastFrame=-Infinity,owner='',blockedUntil=0,generation=0;
   return {
     async frame(frame){
       if(!frame||typeof frame!=='object')throw Error('Invalid frame');
       const client=String(frame.controller_id||'single');
-      if(frame.control===true){owner=client;mode=frame.mode;paused=false;director.reset();lastFrame=-Infinity;}
+      if(frame.control===true){owner=client;mode=frame.mode;paused=false;director.reset();lastFrame=-Infinity;blockedUntil=0;generation++;}
       else if(owner!==client||frame.mode!==mode)return this.status();
       if(paused)return this.status();
+      if(now()<blockedUntil)return this.status();
       if(busy||now()-lastFrame<180)return this.status();lastFrame=now();
       const result=director.update(frame);reason=director.status().reason;
       if(result?.pause){paused=true;log(reason);return this.status();}
-      if(reason!==lastLog){if(result?.command||frame.mode==='preview')log('[AutoSpec] '+reason);lastLog=reason;}
+      if(reason!==lastLog){if(frame.mode==='preview')log('[AutoSpec] '+reason);lastLog=reason;}
       if(result?.command){
         busy=true;
-        try{await send(result.command);}
-        catch{paused=true;reason='Sem Netcon. Inicie CS2 com -netconport 2020 e reative o automático.';log(reason);}
+        const version=generation;
+        try{await send(result.command,{isCurrent:()=>version===generation&&mode==='auto'&&!paused&&now()-frame.sent_at<=2000});log('[AutoSpec] Corte enviado: '+result.name+' ('+result.reason+'); aguardando confirmacao GSI.');}
+        catch(error){
+          if(error.code==='CANCELLED'){director.reset();reason=mode==='auto'?'Corte expirado; aguardando novos dados':'Manual';}
+          else if(['FOCUS_LOST','MODIFIER_HELD'].includes(error.code)){
+            director.reset();blockedUntil=now()+1200;
+            reason=error.code==='FOCUS_LOST'?'Aguardando CS2 em foco; nenhum atalho enviado':'Aguardando soltar Alt/Shift/Ctrl';
+          }else{
+            paused=true;reason=transport==='keyboard'?'Falha na ponte de teclado: '+error.message:'Sem Netcon ('+(error.code||error.message)+'). Windows normal: use o assistente SEM-TOOLS.';
+          }
+          log(reason);
+        }
         finally{busy=false;}
       }
       return this.status();
     },
-    status(){return {...director.status(),enabled:mode==='auto'&&!paused&&director.status().enabled,paused,reason};}
+    status(){return {...director.status(),enabled:mode==='auto'&&!paused&&director.status().enabled,paused,reason,transport};}
   };
 }
 module.exports={createDirector,createAutoSpec,targetCommand,sendNetcon};

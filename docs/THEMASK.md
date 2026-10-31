@@ -98,3 +98,11 @@ O ZIP entregue da v1.5 estava truncado, sem o registro final do diretório ZIP. 
 Quando não há foto cadastrada nem avatar Steam utilizável, as fotos dos jogadores usam os agentes CT/TR originais da Echo como reserva, inclusive no ranking e no destaque. A tabela passou a 400 px com linhas de 44 px; o destaque passou a 318 × 390 px, com retrato e números maiores.
 
 O teste de diretor automático está em uma variante Echo independente, gerada com `python3 scripts/package-echo-spec.py`. Consulte `docs/ECHO-AUTOSPEC-LEIA-ME.txt`. A TheMask normal não ativa cortes automáticos. O assistente compartilhado inclui o serviço, mas só a Echo de teste envia quadros e controles do diretor.
+
+## Transporte de espectador no Windows normal (Echo AutoSpec 0.2)
+
+O uso ao vivo revelou que o workaround Netcon/Workshop Tools não atende ao servidor protegido deste usuário. A ponte alternativa de teclado mantém o jogo normal: `INICIAR-AUTOSPEC-SEM-TOOLS.cmd` detecta `game/csgo/cfg`, cria somente uma CFG identificada do projeto e executa cortes por F10 após a configuração manual do bind. O pacote pequeno é gerado por `scripts/package-autospec-helper.py` e funciona com a Echo de teste já instalada. Não requer reimportar a HUD.
+
+O envio verifica a janela em primeiro plano e modificadores antes da preparação e antes da tecla. Fora do CS2 aguarda e retoma ao voltar. Isso exige manter CS2 em foco; não substitui um controlador em segundo plano para quem opera OBS com o mouse. Cortes expirados ou cancelados pelo modo manual não são enviados. Falta de confirmação GSI continua interrompendo o automático.
+
+Testes mock verificam escrita da CFG, neutralização, recusa de arquivos alheios, validação de comandos, foco perdido e retomada. A chamada Win32/tecla no CS2 não foi executada neste ambiente. Não há afirmação de compatibilidade universal com regras de plataformas/anti-cheat. O uso projetado é somente espectador, sem alterar memória ou DLLs do jogo.

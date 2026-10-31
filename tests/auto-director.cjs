@@ -14,6 +14,8 @@ test('somente espectador confirmado com dados recentes pode cortar; simulação 
   f=fixture(time);f.sent_at=time-3000;assert.equal(d.update(f),null);
   f=fixture(time);f.mode='preview';assert.equal(d.update(f),null);assert.ok(d.status().suggestion);
   f.phase='freezetime';f.mode='auto';assert.equal(d.update(f),null);
+  f=fixture(time);f.players=[...f.players,...Array.from({length:20},(_,i)=>({...f.players[0],id:'76561198000000'+String(100+i)})),{...f.players[0],id:f.observer}];
+  f.bomb={state:'planting',player:ids[1]};assert.equal(d.update(f),null);assert.equal(d.status().enabled,false);
 });
 test('dano recente gera corte, exige confirmação e segura câmera antes de outro duelo',()=>{
   let time=10000;const d=createDirector({now:()=>time}),f=fixture(time);d.update(f);

@@ -37,7 +37,7 @@ function createAvatarStore({fetchText,cachePath,now=()=>Date.now()}={}){
     try{return await task;}finally{pending.delete(id);}
   };
 }
-function createHelper({getAvatar=createAvatarStore(),port=23416,autoSpec=createAutoSpec()}={}){
+function createHelper({getAvatar=createAvatarStore(),port=23416,autoSpec=createAutoSpec(),onManual=()=>{}}={}){
   const server=http.createServer(async(req,res)=>{
     const origin=req.headers.origin;
     const originOK=!origin||/^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(origin);
@@ -54,12 +54,14 @@ function createHelper({getAvatar=createAvatarStore(),port=23416,autoSpec=createA
       if(!String(req.headers['content-type']||'').startsWith('application/json')){res.writeHead(415);return res.end('{}');}
       try{
         let body='';for await(const chunk of req){body+=chunk;if(body.length>65536)throw Error('Too large');}
-        return res.end(JSON.stringify(await autoSpec.frame(JSON.parse(body))));
+        const frame=JSON.parse(body),status=await autoSpec.frame(frame);
+        if(frame.control===true&&frame.mode==='off'&&!status.enabled)try{onManual();}catch{}
+        return res.end(JSON.stringify(status));
       }catch{res.writeHead(400);return res.end('{}');}
     }
     if(req.method!=='GET'){res.writeHead(405);return res.end('{}');}
     if(pathname==='/director/status')return res.end(JSON.stringify(autoSpec.status()));
-    if(pathname==='/health')return res.end(JSON.stringify({service:'themask-helper',version:'1.6.0'}));
+    if(pathname==='/health')return res.end(JSON.stringify({service:'themask-helper',version:'1.6.1'}));
     const id=pathname.match(/^\/avatar\/(765\d{14})$/)?.[1];
     if(!id){res.writeHead(404);return res.end('{}');}
     try{res.end(JSON.stringify({steam:await getAvatar(id)}));}
@@ -69,11 +71,20 @@ function createHelper({getAvatar=createAvatarStore(),port=23416,autoSpec=createA
 }
 if(require.main===module){
   const getAvatar=createAvatarStore({cachePath:path.join(__dirname,'cache','steam-avatars.json')});
-  const server=createHelper({getAvatar});
+  const keyboardMode=process.env.THEMASK_AUTO_TRANSPORT==='keyboard';
+  let keyboard=null,bridge=null;
+  if(keyboardMode){
+    const {createKeyboardBridge,createKeyboardTransport}=require('./keyboard-transport.cjs');
+    bridge=createKeyboardBridge();
+    keyboard=createKeyboardTransport({directory:process.env.THEMASK_CS2_CFG_DIR,request:action=>bridge.request(action)});
+  }
+  const autoSpec=createAutoSpec({...(keyboard?{send:keyboard.send}:{}),transport:keyboardMode?'keyboard':'netcon'});
+  const server=createHelper({getAvatar,autoSpec,onManual:()=>keyboard?.clear()});
   let mouse;
-  server.on('error',error=>{console.error(error.code==='EADDRINUSE'?'O assistente ja esta aberto (porta 23416).':error.message);process.exitCode=1;});
-  server.listen(23416,'127.0.0.1',()=>{
-    console.log('TheMask 1.6: fotos Steam e AutoSpec disponiveis. Deixe esta janela aberta.');
+  server.on('error',error=>{console.error(error.code==='EADDRINUSE'?'O assistente ja esta aberto (porta 23416).':error.message);bridge?.close();process.exitCode=1;});
+  const start=()=>server.listen(23416,'127.0.0.1',()=>{
+    console.log('TheMask / AutoSpec 0.2: fotos Steam e diretor disponiveis. Deixe esta janela aberta.');
+    console.log(keyboardMode?'Transporte: TECLADO F10 / CS2 em foco. Sem Netcon e sem -tools.':'Transporte: Netcon legado / porta 2020.');
     console.log('Echo teste: Alt+Shift+A automatico, Alt+Shift+M manual, Alt+Shift+D simulacao.');
     console.log('Apos iniciar a HUD, use Alt+Tab e selecione Counter-Strike 2 uma vez.');
     if(process.platform==='win32'){
@@ -81,7 +92,8 @@ if(require.main===module){
       mouse.on('error',()=>console.log('Nao foi possivel iniciar o ajuste da janela. Use a HUD apenas no OBS.'));
     }
   });
-  const stop=()=>{mouse?.kill();server.close();process.exit();};
+  (bridge?.ready||Promise.resolve()).then(start).catch(error=>{console.error(error.message);bridge?.close();process.exitCode=1;});
+  const stop=()=>{try{keyboard?.clear();}catch{}bridge?.close();mouse?.kill();server.close();process.exit();};
   process.on('SIGINT',stop);process.on('SIGTERM',stop);process.on('SIGHUP',stop);process.on('exit',()=>mouse?.kill());
 }
 module.exports={avatarFromXML,createAvatarStore,createHelper};
