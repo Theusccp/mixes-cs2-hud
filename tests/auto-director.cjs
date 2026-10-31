@@ -25,11 +25,12 @@ test('dano recente gera corte, exige confirmação e segura câmera antes de out
   f.observed=ids[1];d.update(f);
   time+=400;f.sent_at=time;f.players[3].damage=150;f.players[3].hp=80;assert.equal(d.update(f),null);assert.match(d.status().reason,/Segurando/);
 });
-test('desarme tem prioridade e falta de confirmação interrompe novos cortes',()=>{
+test('desarme tem prioridade e confirmação tem tolerância de cinco segundos',()=>{
   let time=10000;const d=createDirector({now:()=>time}),f=fixture(time);d.update(f);
   time+=1000;f.sent_at=time;f.bomb={state:'defusing',player:ids[1]};
   assert.equal(d.update(f).id,ids[1]);
-  time+=3100;f.sent_at=time;assert.deepEqual(d.update(f),{pause:true});
+  time+=3100;f.sent_at=time;assert.equal(d.update(f),null);assert.equal(d.status().unconfirmed_cuts,0);
+  time+=2000;f.sent_at=time;assert.deepEqual(d.update(f),{retry:true});assert.equal(d.status().enabled,true);
 });
 test('troca manual pausa dez segundos; morte do assistido não parece intervenção manual',()=>{
   let time=10000;const d=createDirector({now:()=>time}),f=fixture(time);d.update(f);
@@ -83,4 +84,57 @@ test('painel local ativa com HUD em manual, confirma câmera e respeita parada e
   assert.throws(()=>auto.control('invalid'));
   auto.control('auto');time+=3000;assert.equal(auto.status().feed.connected,false);
   assert.equal(auto.status().enabled,false);assert.match(auto.status().reason,/Sem dados/);
+});
+
+test('falha isolada não trava durante compra; próxima rodada confirma e zera falhas',async()=>{
+  let time=10000,calls=0;
+  const auto=createAutoSpec({now:()=>time,log:()=>{},send:async()=>{calls++;},transport:'keyboard'});
+  const f=fixture(time);f.control=true;f.bomb={state:'defusing',player:ids[1]};
+  await auto.frame(f);assert.equal(calls,1);
+  time+=5100;f.sent_at=time;f.control=false;await auto.frame(f);
+  assert.equal(auto.status().paused,false);assert.equal(auto.status().unconfirmed_cuts,1);
+  time+=400;f.sent_at=time;f.phase='freezetime';f.players=f.players.filter(p=>p.id!==ids[1]);
+  await auto.frame(f);assert.match(auto.status().reason,/Compra/);assert.equal(calls,1);
+  assert.equal(auto.status().feed.players,3);
+  time+=15000;f.sent_at=time;f.phase='live';f.round++;f.bomb.player=ids[2];
+  await auto.frame(f);assert.equal(calls,2);assert.equal(auto.status().paused,false);
+  time+=400;f.sent_at=time;f.observed=ids[2];await auto.frame(f);
+  assert.equal(auto.status().unconfirmed_cuts,0);assert.equal(auto.status().last_unconfirmed_target,null);
+  assert.equal(auto.status().paused,false);
+});
+
+test('alvo morto ou desconectado antes de confirmar é descartado sem contar falha',()=>{
+  for(const disconnected of [false,true]){
+    let time=10000;const d=createDirector({now:()=>time}),f=fixture(time);
+    f.bomb={state:'defusing',player:ids[1]};assert.equal(d.update(f).id,ids[1]);
+    if(disconnected)f.players=f.players.filter(p=>p.id!==ids[1]);else f.players[1].hp=0;
+    time+=400;f.sent_at=time;f.bomb.player=ids[2];
+    assert.equal(d.update(f).id,ids[2]);assert.equal(d.status().unconfirmed_cuts,0);
+  }
+});
+
+test('confirmação atrasada recupera alvo e não conta como intervenção manual',()=>{
+  let time=10000;const d=createDirector({now:()=>time}),f=fixture(time);
+  f.bomb={state:'defusing',player:ids[1]};d.update(f);
+  time+=5100;f.sent_at=time;assert.deepEqual(d.update(f),{retry:true});
+  time+=400;f.sent_at=time;f.observed=ids[1];assert.equal(d.update(f),null);
+  assert.match(d.status().reason,/Mantendo/);assert.equal(d.status().unconfirmed_cuts,0);
+});
+
+test('três falhas consecutivas pausam; manual cancela recuperação e dados de jogador nunca cortam',async()=>{
+  let time=10000,calls=0;
+  const auto=createAutoSpec({now:()=>time,log:()=>{},send:async()=>{calls++;}});
+  const f=fixture(time);f.control=true;f.observed='';
+  for(let attempt=1;attempt<=3;attempt++){
+    await auto.frame(f);assert.equal(calls,attempt);f.control=false;
+    time+=5100;f.sent_at=time;await auto.frame(f);
+    assert.equal(auto.status().unconfirmed_cuts,attempt);
+    assert.equal(auto.status().paused,attempt===3);
+    time+=1600;f.sent_at=time;
+  }
+  assert.match(auto.status().reason,/3 cortes/);
+  await auto.frame(f);assert.equal(calls,3);
+  auto.control('off');await auto.frame(f);assert.equal(calls,3);assert.equal(auto.status().mode,'off');
+  auto.control('auto');f.observer=ids[0];await auto.frame(f);
+  assert.equal(calls,3);assert.equal(auto.status().enabled,false);
 });

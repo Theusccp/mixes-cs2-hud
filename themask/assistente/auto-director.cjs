@@ -14,6 +14,8 @@ function targetCommand(player,players,nativeSlots=false){
 function createDirector({now=()=>Date.now()}={}){
   let previous=new Map(),heat=new Map(),map='',round=null,lastCut=-Infinity,lastSeen='',pending=null,manualUntil=0;
   let enabled=false,reason='Desligado',suggestion=null,lastTime=0;
+  let misses=0,retryUntil=0,lastMiss=null;
+  const skipped=new Map();
   function update(frame){
     const time=now(),list=Array.isArray(frame.players)?frame.players.slice(0,64):[];
     const mode=['auto','preview'].includes(frame.mode)?frame.mode:'off';
@@ -26,7 +28,7 @@ function createDirector({now=()=>Date.now()}={}){
     }
     if(!Number.isFinite(frame.sent_at)||Math.abs(time-frame.sent_at)>2000){reason='Dados atrasados';pending=null;return null;}
     if(map!==frame.map||round!==frame.round){
-      previous=new Map();heat=new Map();pending=null;lastSeen='';lastCut=-Infinity;
+      previous=new Map();heat=new Map();pending=null;lastSeen='';lastCut=-Infinity;retryUntil=0;skipped.clear();
     }else if(time-lastTime>2500){previous=new Map();heat=new Map();}
     map=frame.map;round=frame.round;lastTime=time;
     for(const p of active){
@@ -41,17 +43,31 @@ function createDirector({now=()=>Date.now()}={}){
       previous.set(p.id,{...p});
     }
     if(mode==='off'){reason='Manual';pending=null;lastSeen=frame.observed||'';return null;}
-    if(!['live','bomb','defuse'].includes(frame.phase)){reason='Compra / pausa / fim de rodada';pending=null;lastSeen=frame.observed||'';return null;}
+    if(!['live','bomb','defuse'].includes(frame.phase)){reason='Compra / pausa / fim de rodada';pending=null;retryUntil=0;lastSeen=frame.observed||'';return null;}
+    if(lastMiss?.id===frame.observed){
+      skipped.delete(lastMiss.id);misses=0;lastMiss=null;retryUntil=0;lastSeen=frame.observed;
+    }
     if(pending){
-      if(frame.observed===pending.id){lastSeen=frame.observed;pending=null;}
-      else if(time-pending.at>3000){reason='Corte sem confirmação: automático pausado';enabled=false;return {pause:true};}
+      if(frame.observed===pending.id){lastSeen=frame.observed;pending=null;misses=0;lastMiss=null;}
+      else if(!alive.some(p=>p.id===pending.id)){
+        // A dead or disconnected target cannot acknowledge a new POV.
+        pending=null;lastSeen=frame.observed||'';lastCut=-Infinity;
+      }
+      else if(time-pending.at>5000){
+        misses++;lastMiss={id:pending.id,name:pending.name};skipped.set(pending.id,time+15000);
+        pending=null;lastSeen=frame.observed||'';retryUntil=time+1500;
+        if(misses>=3){reason='3 cortes sem confirmação: automático pausado; verifique F10 e reative';enabled=false;return {pause:true};}
+        reason='Corte sem confirmação ('+misses+'/3): tentando outro alvo em 1,5s';
+        return {retry:true};
+      }
       else{reason='Aguardando confirmação da câmera';return null;}
     }
+    if(time<retryUntil){reason='Aguardando nova tentativa de câmera';return null;}
     if(enabled&&lastSeen&&frame.observed&&frame.observed!==lastSeen&&active.find(p=>p.id===lastSeen)?.hp>0)manualUntil=time+10000;
     lastSeen=frame.observed||'';
     if(enabled&&manualUntil>time){reason='Intervenção manual: pausa de 10s';return null;}
     const count=side=>alive.filter(p=>p.side===side).length;
-    const scores=alive.map(p=>{
+    const scores=alive.filter(p=>!(skipped.get(p.id)>time)).map(p=>{
       let score=0,label='posição';
       const activity=heat.get(p.id);if(activity?.until>time){score+=activity.points;label='trocação recente';}
       for(const enemy of alive.filter(e=>e.side!==p.side)){
@@ -77,10 +93,13 @@ function createDirector({now=()=>Date.now()}={}){
     if(current&&time-lastCut<hold&&!best.objective){reason='Segurando câmera';return null;}
     if(time-lastCut<1000){reason='Intervalo mínimo de corte';return null;}
     if(current&&!best.objective&&best.score<current.score+30){reason='Mantendo câmera estável';return null;}
-    lastCut=time;pending={id:best.id,at:time};reason='Corte: '+best.name+' ('+best.label+')';
+    lastCut=time;pending={id:best.id,name:best.name,at:time};reason='Corte: '+best.name+' ('+best.label+')';
     return {command:best.command,id:best.id,name:best.name,reason:best.label};
   }
-  return {update,status:()=>({enabled,reason,suggestion}),reset(){pending=null;lastSeen='';manualUntil=0;lastCut=-Infinity;enabled=false;suggestion=null;}};
+  return {update,status:()=>({enabled,reason,suggestion,unconfirmed_cuts:misses,
+    pending_target:pending?{id:pending.id,name:pending.name}:null,last_unconfirmed_target:lastMiss}),
+    reset(){pending=null;lastSeen='';manualUntil=0;lastCut=-Infinity;enabled=false;suggestion=null;
+      misses=0;retryUntil=0;lastMiss=null;skipped.clear();}};
 }
 
 function sendNetcon(command,{port=2020,connect=net.createConnection,isCurrent=()=>true}={}){
@@ -118,6 +137,7 @@ function createAutoSpec({send=sendNetcon,now=()=>Date.now(),log=console.log,tran
       if(busy||now()-lastFrame<180)return this.status();lastFrame=now();
       const result=director.update(frame);reason=director.status().reason;
       if(result?.pause){paused=true;log(reason);return this.status();}
+      if(result?.retry)log('[AutoSpec] '+reason);
       if(reason!==lastLog){if(frame.mode==='preview')log('[AutoSpec] '+reason);lastLog=reason;}
       if(result?.command){
         busy=true;

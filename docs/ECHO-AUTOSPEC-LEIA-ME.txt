@@ -1,4 +1,4 @@
-ECHO / THEMASK — AUTOSPEC EXPERIMENTAL 0.3
+ECHO / THEMASK — ASSISTENTE AUTOSPEC EXPERIMENTAL 0.4
 
 PRIMEIRO TESTE NO WINDOWS NORMAL
 1. Remova -tools das opcoes de inicializacao e reinicie o CS2 normal.
@@ -46,8 +46,13 @@ abates, municao quando recebida, clutch, plantio e desarme.
 Mantem a camera por pelo menos 3,5 segundos em cortes comuns. Desarme,
 plantio e morte do assistido podem antecipar o corte, com limite de 1 s.
 Troca manual de um assistido vivo pausa o diretor por dez segundos.
-O alvo deve aparecer no GSI em ate tres segundos; sem confirmacao, o
-automatico pausa. Corrija a conexao e use manual/automatico para retomar.
+O alvo deve aparecer no GSI em ate cinco segundos. Um alvo que morre ou
+desconecta antes da confirmacao e descartado sem bloquear o diretor.
+Uma falha isolada aguarda 1,5 s e procura outro alvo; o alvo que falhou
+fica fora da selecao por 15 s. Durante compra/pausa nao envia comandos;
+retoma na fase live. Confirmacao bem-sucedida zera o contador de falhas.
+Somente tres falhas consecutivas pausam o automatico ate reativar.
+O diagnostico inclui unconfirmed_cuts, pending_target e last_unconfirmed_target.
 As fontes separadas do OBS nao devem reativar um diretor ja parado.
 
 LIMITES IMPORTANTES DO TESTE
