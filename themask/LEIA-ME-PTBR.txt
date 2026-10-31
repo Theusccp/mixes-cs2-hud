@@ -1,7 +1,7 @@
-THE MASK CUP — BROADCAST HUD 1.4.0
+THE MASK CUP — BROADCAST HUD 1.5.0
 
 INSTALAÇÃO NO JTs
-1. Importe TheMask-HUD-v1.4.zip em HUDs > Import HUD, sem descompactar.
+1. Importe TheMask-HUD-v1.5.zip em HUDs > Import HUD, sem descompactar.
 2. Inicie The Mask Cup — Broadcast.
 3. Copie a URL para uma fonte Navegador do OBS, em 1920 x 1080.
 4. Cadastre jogadores, fotos e times no JTs. Os dados vêm da mesma integração GSI usada pela Echo.
@@ -26,11 +26,22 @@ A economia mostra dinheiro total das equipes e bônus de derrota durante
 compra/pausa. O bônus usa a escala padrão da Echo, de 1400 até 3400.
 Cada painel pode ser ocultado separadamente na personalização do JTs.
 O destaque só aparece depois que uma rodada com dados de abates/dano terminar.
+Exibição mínima de 8 segundos, preservando dados antes do reset da rodada.
+No fim de mapa, permanece mesmo se o servidor desconectar.
 
 ANIMAÇÕES
 Ranking, economia e destaque entram e saem suavemente nas mudanças de fase.
 O radar volta depois do recolhimento do ranking; as linhas entram em sequência.
 A preferência do sistema por movimento reduzido desativa os efeitos.
+
+ASSISTENTE PARA STEAM E MOUSE
+Além de importar o ZIP, extraia uma CÓPIA dele em uma pasta sua.
+Com o JTs aberto, execute assistente/INICIAR-THEMASK.cmd dessa cópia e
+deixe a janela aberta. O assistente usa Node instalado ou o próprio JTs.
+Ele busca a foto Steam quando não existe foto salva (ou a foto salva falha)
+e ajusta a janela da HUD no Windows para não receber ativação/cliques.
+Depois de iniciar a HUD, use Alt+Tab e selecione Counter-Strike 2 uma vez.
+Mais detalhes em assistente/LEIA-ME.txt. O ajuste nativo requer teste no Windows.
 
 FOTOS
 O padrão preenche o hexágono. Para retratos PNG de corpo, marque
@@ -42,8 +53,12 @@ Para retrato, use o PNG original em 800 x 834 ou maior na proporção 400:417.
 A HUD não recupera detalhes que já foram perdidos no arquivo cadastrado.
 
 MOUSE E FOCO
-A camada de transmissão tem interação e cursor desativados. Isso não
-controla a captura do mouse pelo CS2 nem o foco da janela do jogo.
+O CSS desativa interação/cursor na página; o assistente opcional ajusta a
+janela externa do JTs. A captura do cursor continua sendo do próprio CS2.
+Para troca por teclado, copie cfg/themaskobserver.cfg para game/csgo/cfg
+e execute exec themaskobserver: F7 anterior, F8 próximo, F9 modo de câmera.
+Esse arquivo redefine F7/F8/F9 e habilita 1-0 para os slots nativos.
+Se usa Spectator Binds personalizados do JTs, reaplique-os depois.
 Confira a fonte do OBS em 1920 x 1080 para evitar cortes ou escala extra.
 
 INTERFACE DO CS2

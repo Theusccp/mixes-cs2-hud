@@ -1,14 +1,16 @@
 import { createRenderer } from './themask-renderer.js';
 import { normalizeJTs, safeImage } from './themask-state.js';
+import { createPortraits } from './themask-photos.js';
 
 export function installTheMask({game, actions, config, api, socket, apiBase}) {
-  const renderer = createRenderer({debug:new URLSearchParams(location.search).get('debug') === '1'});
+  const portraits=createPortraits({api,apiBase,onChange:()=>rerender()});
+  const renderer = createRenderer({debug:new URLSearchParams(location.search).get('debug') === '1',onPhotoFailure:player=>portraits.failed(player)});
   const stage = document.querySelector('#stage');
   let latest = null, match = null, settings = {}, visible = true, logoVisible = true;
   let bombPlayer = '', roundKey = '', loadVersion = 0, loadedMap = '';
   const rerender = () => {
     if (!latest) return;
-    const state = normalizeJTs(latest, match, settings, apiBase);
+    const state = portraits.decorate(normalizeJTs(latest, match, settings, apiBase));
     const key = `${latest.map?.name}:${latest.map?.round}`;
     if (key !== roundKey) { roundKey = key; bombPlayer = ''; }
     if (state.bomb_player && state.bomb !== 'defusing') bombPlayer = state.bomb_player;
@@ -46,6 +48,7 @@ export function installTheMask({game, actions, config, api, socket, apiBase}) {
   apply(config.data);
   game.on('data', data => {
     latest = data;
+    portraits.request(data.players||[]);
     if (data.map?.name !== loadedMap) { loadedMap = data.map?.name || ''; loadMatch(); }
     rerender();
   });

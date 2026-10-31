@@ -69,6 +69,7 @@ export function normalizeJTs(data, match = null, settings = {}, apiBase) {
       money_known:p.state?.money!=null&&Number.isFinite(Number(p.state.money)),
       real_name:/^(undefined|null)( (undefined|null))?$/i.test(String(p.realName||'').trim())?'':String(p.realName||'').trim(),
       deaths: finite(p.stats?.deaths), assists: finite(p.stats?.assists),
+      mvps: finite(p.stats?.mvps),
       round_kills: clamp(p.state?.round_kills, 0, 5), round_dmg: finite(p.state?.round_totaldmg),
       weapon: weaponName((primary || active)?.name), secondary: weaponName(pistol?.name),
       active: weaponName(active?.name), ammo: active?.ammo_clip != null
@@ -87,6 +88,8 @@ export function normalizeJTs(data, match = null, settings = {}, apiBase) {
   };
   let phase = data.phase_countdowns?.phase || data.round?.phase || 'live';
   if (data.map.phase === 'gameover') phase = 'gameover';
+  else if (data.round?.phase === 'over') phase = 'over';
+  else if (data.map.phase === 'warmup') phase = 'warmup';
   else if (data.bomb?.state === 'defusing') phase = 'defuse';
   else if (data.bomb?.state === 'planted' && phase !== 'over') phase = 'bomb';
   const time = phase === 'defuse' ? data.bomb?.countdown : data.phase_countdowns?.phase_ends_in;

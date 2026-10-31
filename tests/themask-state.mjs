@@ -2,7 +2,8 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
 const source=await readFile(new URL('../themask/assets/themask-state.js',import.meta.url),'utf8');
-const {normalizeJTs,safeImage,playerPhoto,teamLabel,lossBonus}=await import('data:text/javascript;base64,'+Buffer.from(source).toString('base64'));
+const stateURL='data:text/javascript;base64,'+Buffer.from(source).toString('base64');
+const {normalizeJTs,safeImage,playerPhoto,teamLabel,lossBonus}=await import(stateURL);
 function fixture(){
   const ct={side:'CT',orientation:'left',score:9,name:'COBRA',matches_won_this_series:1};
   const tr={side:'T',orientation:'right',score:8,name:'LOBO',matches_won_this_series:0};
@@ -78,7 +79,9 @@ test('economia soma o dinheiro dos jogadores e mantém dados desconhecidos como 
 
 const motionSource=await readFile(new URL('../themask/assets/themask-motion.js',import.meta.url),'utf8');
 const motionURL='data:text/javascript;base64,'+Buffer.from(motionSource).toString('base64');
-const panelSource=(await readFile(new URL('../themask/assets/themask-panels.js',import.meta.url),'utf8')).replace('./themask-motion.js',motionURL);
+const photoSource=(await readFile(new URL('../themask/assets/themask-photos.js',import.meta.url),'utf8')).replace('./themask-state.js',stateURL);
+const photoURL='data:text/javascript;base64,'+Buffer.from(photoSource).toString('base64');
+const panelSource=(await readFile(new URL('../themask/assets/themask-panels.js',import.meta.url),'utf8')).replace('./themask-motion.js',motionURL).replace('./themask-photos.js',photoURL);
 const {buildRanking,createRoundHighlights}=await import('data:text/javascript;base64,'+Buffer.from(panelSource).toString('base64'));
 test('ranking usa K/D e lida com zero mortes sem infinito',()=>{
   const rows=buildRanking([{id:'a',kills:8,deaths:0},{id:'b',kills:20,deaths:5},{id:'c',kills:0,deaths:0}]);
@@ -94,4 +97,28 @@ test('destaque usa abates e dano, sobrevive ao reset da compra e é limpo em nov
   data.round={phase:'freezetime'};data.phase_countdowns.phase='freezetime';data.map.round=18;
   const freeze=tracker.update(normalizeJTs(data));assert.equal(freeze.id,'3');assert.equal(freeze.round_dmg,250);
   data.map.name='de_inferno';assert.equal(tracker.update(normalizeJTs(data)),null);
+});
+
+test('fim de rodada prevalece sobre contador e bomba atrasados no GSI',()=>{
+  const data=fixture();data.phase_countdowns.phase='bomb';data.bomb={state:'planted'};
+  data.round={phase:'over',win_team:'CT'};
+  assert.equal(normalizeJTs(data).phase,'over');
+  data.phase_countdowns.phase='live';assert.equal(normalizeJTs(data).phase,'over');
+  data.map.phase='gameover';assert.equal(normalizeJTs(data).phase,'gameover');
+});
+test('destaque preserva o pico antes de um pacote zerado e captura fim sem pacote over',()=>{
+  let now=1000;const tracker=createRoundHighlights(()=>now),data=fixture();
+  data.players[2].state.round_kills=3;data.players[2].state.round_totaldmg=320;
+  tracker.update(normalizeJTs(data));
+  for(const p of data.players){p.state.round_kills=0;p.state.round_totaldmg=0;}
+  tracker.update(normalizeJTs(data)); // Last live packet can already contain reset counters.
+  data.round={phase:'over',win_team:'T'};data.phase_countdowns.phase='live';
+  const end=tracker.update(normalizeJTs(data));
+  assert.equal(end.id,'3');assert.equal(end.round_kills,3);assert.equal(end.round_dmg,320);
+  now=5000;assert.equal(tracker.update(normalizeJTs(data)).completed_at,1000);
+  const skipped=createRoundHighlights(()=>now),live=fixture();
+  live.players[2].state.round_totaldmg=290;skipped.update(normalizeJTs(live));
+  live.map.round++;live.phase_countdowns.phase='freezetime';live.round.phase='freezetime';
+  for(const p of live.players){p.state.round_kills=0;p.state.round_totaldmg=0;}
+  assert.equal(skipped.update(normalizeJTs(live)).round_dmg,290);
 });

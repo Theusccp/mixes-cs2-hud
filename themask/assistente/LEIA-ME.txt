@@ -1,0 +1,40 @@
+THEMASK 1.5 — FOTOS STEAM E MOUSE NO WINDOWS
+
+1. Importe o ZIP completo da HUD no JTs, sem descompactar.
+2. Extraia UMA COPIA do mesmo ZIP em uma pasta sua.
+3. Com o JTs aberto, execute assistente/INICIAR-THEMASK.cmd desta copia.
+   Deixe a janela do assistente aberta durante o uso.
+4. Inicie a HUD. Use Alt+Tab e selecione Counter-Strike 2 uma vez.
+
+FOTOS
+Foto cadastrada tem prioridade. Quando falta ou falha, o assistente busca
+o avatar full do perfil Steam pelo SteamID64 recebido do jogo.
+Nao precisa de chave de API. Pode levar cerca de 30 segundos para repetir
+a consulta se o assistente for aberto depois da HUD. Steam indisponivel
+ou sem avatar utilizavel: a logo permanece como reserva.
+
+MOUSE E TECLADO
+O assistente aplica estilos de janela somente em JTs Hud Manager Overlay,
+do processo JTs Hud Manager. A janela passa a ignorar ativacao e cliques.
+Nao prende o cursor nem altera o jogo ou os arquivos instalados do JTs.
+Fechar a janela da HUD desfaz esse ajuste; reabri-la com o assistente
+aberto o reaplica. O CS2 precisa estar selecionado pelo Alt+Tab.
+Se usar OBS, pode colocar a URL em uma fonte Navegador e manter a HUD
+fora da janela do jogo.
+
+TROCAR DE JOGADOR PELO TECLADO
+Copie cfg/themaskobserver.cfg do ZIP para game/csgo/cfg do CS2.
+No console, como espectador: exec themaskobserver
+F7: anterior / F8: proximo / F9: modo de camera / 1-0: slots nativos.
+Esse arquivo redefine F7/F8/F9 e o metodo dos numeros. Se usa slots
+personalizados em Spectator Binds do JTs, reaplique-os depois ou use
+somente os binds F7/F8/F9 do arquivo.
+
+REQUISITOS E DIAGNOSTICO
+Windows com PowerShell e JTs aberto. O assistente usa Node instalado ou
+o runtime Electron do JTs. Nao precisa modificar a instalacao do JTs.
+O servico usa apenas 127.0.0.1:23416 e consulta perfis publicos da Steam.
+Cache das fotos: assistente/cache/steam-avatars.json (seis horas).
+Uma unica janela do assistente deve ficar aberta por vez.
+O ajuste da janela e especifico do Windows; precisa de verificacao no
+seu computador. Os testes automatizados nao executaram CS2/JTs reais.

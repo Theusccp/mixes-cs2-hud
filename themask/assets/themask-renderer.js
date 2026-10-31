@@ -2,9 +2,10 @@ import { safeImage } from './themask-state.js';
 import { createRadar } from './themask-radar.js';
 import { grenadeBadge } from './themask-grenades.js';
 import { createPanels } from './themask-panels.js';
+import { setPortrait } from './themask-photos.js';
 export function createRenderer(options = {}) {
   const radar=createRadar();
-  const panels=createPanels();
+  const panels=createPanels({onPhotoFailure:options.onPhotoFailure});
   let lastState = null;
   const failedImages = new Set();
   const $ = (s, el = document) => el.querySelector(s);
@@ -65,7 +66,7 @@ export function createRenderer(options = {}) {
       side(el, p.side);
       el.classList.toggle('dead', p.hp <= 0); el.classList.toggle('obs', !!p.observed);
       txt($('.pc-slot', el), p.slot == null ? '' : p.slot);
-      src($('.pc-av img', el), p.avatar);
+      setPortrait($('.pc-av img', el), p, options.onPhotoFailure);
       txt($('.pc-name', el), p.name);
       $('.pc-hp svg', el).style.visibility = p.armor > 0 ? '' : 'hidden';
       txt($('.pc-hp b', el), p.hp);
@@ -85,7 +86,7 @@ export function createRenderer(options = {}) {
     const box = $('#obs');
     if (!o || o.hp <= 0) { box.hidden = true; return; }
     box.hidden = false; side(box, o.side);
-    src($('.ob-av img', box), o.avatar);
+    setPortrait($('.ob-av img', box), o, options.onPhotoFailure);
     txt($('#obName'), o.name); txt($('#obHp'), o.hp);
     $('#obLine').style.width = o.hp + '%';
     html($('#obAmmo'), o.ammo ? `${o.ammo[0]}<small> / ${o.ammo[1]}</small>` : '');
@@ -121,6 +122,8 @@ export function createRenderer(options = {}) {
   }
 
   function render(s) {
+    // Keep the final broadcast card if the server stops sending data after gameover.
+    if(!s.ok&&lastState?.phase==='gameover')return;
     lastState = s;
     stage.classList.toggle('on', !!s.ok);
     txt(dbg, !s.ok ? 'HUD: ' + (s.reason || 'sem sinal') : DEMO ? 'HUD: demonstração' : 'HUD: ao vivo');

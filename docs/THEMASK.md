@@ -5,7 +5,7 @@ Variante independente da MixES, baseada na referência visual fornecida pelo usu
 ## Instalar no JTs e OBS
 
 1. Gere o pacote em Windows com `py -3 scripts/package-themask.py` ou, em Linux/macOS, com `python3 scripts/package-themask.py`.
-2. No JTs, importe `dist/TheMask-HUD-v1.4.zip`, sem descompactar.
+2. No JTs, importe `dist/TheMask-HUD-v1.5.zip`, sem descompactar.
 3. Inicie **The Mask Cup — Broadcast**. Cadastre times, logos, jogadores e fotos no gerenciador como na Echo/MixES.
 4. Copie a URL para uma fonte Navegador do OBS, em **1920 × 1080**.
 5. Abra o painel da HUD no JTs para configurar nome do campeonato, cores, melhor de, tamanho e encaixe das fotos.
@@ -42,7 +42,7 @@ A camada de transmissão tem `pointer-events: none`, seleção e cursor desativa
 
 Durante compra, pausas e fim de mapa, o ranking ocupa o lugar do radar à esquerda. São exibidos os dez jogadores, abates, mortes e K/D em ordem decrescente de K/D. Zero mortes usa o divisor 1, como na base Echo, sem gerar infinito. Durante a rodada, o ranking se oculta e o radar volta.
 
-O destaque da última rodada aparece à direita no encerramento, na compra, nas pausas e no fim do mapa. Segue o critério da base Echo: mais abates, com dano como desempate. O retrato, o nome e os números são guardados antes de o CS2 zerar os contadores da próxima rodada. Uma sessão sem rodada encerrada não inventa um destaque.
+O destaque da última rodada aparece à direita no encerramento, na compra, nas pausas e no fim do mapa. Desde a v1.5, o fim informado por `round.phase` prevalece sobre contadores/bomba atrasados, os maiores valores de abates/dano são preservados mesmo se o último pacote ao vivo já vier zerado e há exibição mínima de oito segundos após o encerramento. No fim de mapa, o cartão também permanece se o servidor desconectar. Segue o critério da base Echo: mais abates, com dano como desempate. O retrato, o nome e os números são guardados antes de o CS2 zerar os contadores da próxima rodada. Uma sessão sem rodada encerrada não inventa um destaque.
 
 A faixa abaixo do placar mostra o dinheiro somado dos jogadores de cada equipe e o bônus de derrota durante compra/pausa. O bônus usa o contador recebido pelo GSI e o cálculo padrão da Echo: 1400 + 500 por nível, limitado a 3400. Servidores com pagamentos personalizados precisam adequar esse cálculo. Valores desconhecidos aparecem como travessão. As cores acompanham o lado das equipes.
 
@@ -52,6 +52,23 @@ No painel de personalização, é possível ocultar ranking, destaque ou economi
 
 A troca entre ranking e radar tem recolhimento e revelação suaves, inspirados no vídeo de referência. O ranking entra com as linhas em sequência; destaque e economia acompanham as mudanças de fase. Atualizações frequentes do GSI preservam as linhas e não reiniciam as animações. Trocas rápidas de fase cancelam a transição anterior. A preferência do sistema por movimento reduzido desativa esses efeitos. O radar transparente agora mede 380 px por padrão (ajustável de 240 a 480 px).
 
+## Assistente local: fotos da Steam e foco da janela (v1.5)
+
+Algumas versões do JTs devolvem a mesma foto cadastrada em `custom` e `steam`, ou ambos vazios, sem consultar a Steam. A v1.5 mantém prioridade da foto cadastrada e usa a URL Steam fornecida pelo gerenciador quando disponível. Se estiver ausente, o assistente consulta o perfil público pelo SteamID64 e devolve o avatar full. URLs personalizadas que falham também tentam a Steam antes da logo. A busca funciona sem chave de API; indisponibilidade da Steam mantém a logo e permite nova tentativa.
+
+Para usar sobre o próprio CS2:
+
+1. Importe o ZIP completo no JTs normalmente, sem descompactar.
+2. Extraia **uma cópia** do ZIP em uma pasta sua. Abra o JTs e execute `assistente/INICIAR-THEMASK.cmd` dessa cópia. Deixe a janela do assistente aberta durante a transmissão. Ele usa Node instalado ou o runtime do próprio JTs aberto.
+3. Inicie a HUD e use Alt+Tab para selecionar **Counter-Strike 2** uma vez. O assistente ajusta somente a janela chamada `JTs Hud Manager Overlay`, do processo `JTs Hud Manager`, para ignorar ativação e cliques. Não altera o CS2, o executável do JTs, arquivos da instalação ou limites do cursor. Fechar/reabrir a janela da HUD remove os estilos aplicados; o assistente aberto os reaplica.
+4. Copie `cfg/themaskobserver.cfg` para `game/csgo/cfg`. Já no CS2 como espectador, execute `exec themaskobserver`: F7 anterior, F8 próximo, F9 modo de câmera; 1–0 usa os slots nativos. Esse arquivo redefine F7/F8/F9 e o método dos números. Se usa slots personalizados do JTs, reaplique **Spectator Binds** depois ou use apenas os binds F7/F8/F9 do arquivo.
+
+A fonte Navegador do OBS com a URL do JTs em 1920×1080 continua disponível como alternativa à janela sobre o jogo. O CSS da HUD sozinho não controla o foco da janela do Windows.
+
+O serviço de fotos escuta somente em `127.0.0.1:23416`, aceita consultas de leitura de páginas locais e mantém cache de seis horas em `assistente/cache/steam-avatars.json`. Não envia comandos ao jogo. A consulta da Steam exige internet e pode levar cerca de 30 segundos para tentar novamente se o assistente foi aberto depois da HUD.
+
+A busca real de um perfil Steam e os testes de HTTP/cache/fallback passaram. O código de foco é específico de Windows e precisa ser conferido no computador da transmissão; não foi executado contra uma janela real do JTs/CS2 neste ambiente.
+
 ## Implementação e manutenção
 
 - `themask/assets/themask.css`: layout da referência e ajustes locais.
@@ -60,11 +77,13 @@ A troca entre ranking e radar tem recolhimento e revelação suaves, inspirados 
 - `themask/assets/themask-motion.js`: transições canceláveis, acionadas apenas quando a visibilidade muda.
 - `themask/assets/themask-panels.js`: ranking, snapshot do destaque e renderização da economia.
 - `themask/assets/themask-state.js`: conversão dos dados enriquecidos do JTs para a apresentação.
+- `themask/assets/themask-photos.js`: resolução de fotos, prioridade de retratos e recuperação via Steam.
+- `themask/assistente/`: serviço local de avatares e ajuste da janela no Windows.
 - `themask/assets/themask-integration.js`: assinatura de dados, API de times, painel e atalhos.
 - `themask/assets/themask-engine.js`: bundle Echo com a entrada visual substituída, preservando registro Socket.IO, GSI e dados dos jogadores.
 - `themask/panel.json`: campos do gerenciador.
 
-Para validar a conversão de dados, execute `node --test tests/themask-state.mjs` (Node.js 18+). A prévia foi conferida em Chromium em 1920×1080 e 1280×720. Uma simulação local validou o transporte Socket.IO, o processamento GSI da base, fotos, registro, painel, atalhos, desarme, transparência e escape de textos. As transições também foram verificadas com trocas rápidas de fase, atualizações repetidas do GSI, movimento reduzido e radar em 380/480 px. A instalação em JTs e a transmissão real devem ser conferidas no Windows/CS2/OBS antes de uma live. Prévia e simulação de dados não substituem essa verificação.
+Para validar a conversão de dados, execute `node --test tests/themask-state.mjs tests/themask-helper.cjs` (Node.js 18+). A prévia foi conferida em Chromium em 1920×1080 e 1280×720. Uma simulação local validou o transporte Socket.IO, o processamento GSI da base, fotos, registro, painel, atalhos, desarme, transparência e escape de textos. As transições também foram verificadas com trocas rápidas de fase, atualizações repetidas do GSI, movimento reduzido e radar em 380/480 px. A instalação em JTs e a transmissão real devem ser conferidas no Windows/CS2/OBS antes de uma live. Prévia e simulação de dados não substituem essa verificação.
 
 ## Créditos
 
