@@ -44,8 +44,10 @@ export function normalizeJTs(data, match = null, settings = {}, apiBase) {
   if (!data?.map || !Array.isArray(data.players)) return { ok: false, reason: 'aguardando dados do CS2' };
   const teams = [data.map.team_ct, data.map.team_t].filter(Boolean);
   if (teams.length !== 2) return { ok: false, reason: 'aguardando os dois times' };
-  const left = teams.find(t => t.orientation === 'left') || teams[0];
-  const right = teams.find(t => t !== left);
+  const orderedLeft = teams.find(t => t.orientation === 'left') || teams[0];
+  const orderedRight = teams.find(t => t !== orderedLeft);
+  const left = settings.invert_teams === true ? orderedRight : orderedLeft;
+  const right = settings.invert_teams === true ? orderedLeft : orderedRight;
   const observedId = String(data.player?.steamid || '');
   const player = p => {
     const weapons = Array.isArray(p.weapons) ? p.weapons : Object.values(p.weapons || {});
@@ -112,7 +114,7 @@ export function normalizeJTs(data, match = null, settings = {}, apiBase) {
       grenades:(Array.isArray(data.grenades)?data.grenades:[]).filter(g=>g.type==='smoke')},
     series:{best_of:bestOf, maps:maps.map(v => ({name:String(v.mapName || '').replace(/^de_/, '').toUpperCase(),
       status:v.mapEnd ? 'done' : String(v.mapName) === String(data.map.name) ? 'live' : '',
-      winner:v.winner || '', a:Object.values(v.score || {})[0] ?? 0, b:Object.values(v.score || {})[1] ?? 0})),
+      winner:v.winner || '', a:Object.values(v.score || {})[settings.invert_teams===true?1:0] ?? 0, b:Object.values(v.score || {})[settings.invert_teams===true?0:1] ?? 0})),
       a:finite(left.matches_won_this_series), b:finite(right.matches_won_this_series)}
   };
 }

@@ -10,7 +10,7 @@ Variante independente da MixES, baseada na referência visual fornecida pelo usu
 4. Copie a URL para uma fonte Navegador do OBS, em **1920 × 1080**.
 5. Abra o painel da HUD no JTs para configurar nome do campeonato, cores, melhor de, tamanho e encaixe das fotos.
 
-Alt+O alterna a HUD, Alt+L alterna a logo e Alt+F continua sendo o atalho de atualização do JTs. Há botões Mostrar/Ocultar no painel.
+Alt+O alterna a HUD, Alt+L alterna a logo, Alt+T inverte os times na HUD e Alt+F continua sendo o atalho de atualização do JTs. Há botões Mostrar/Ocultar e Inverter times no painel. A inversão troca placar, nomes, logos, jogadores e economia entre esquerda/direita, mantendo as cores de CT/TR. Pressione novamente para voltar. A escolha vale enquanto a HUD estiver aberta e não altera os times no servidor.
 
 ## Prévia local
 

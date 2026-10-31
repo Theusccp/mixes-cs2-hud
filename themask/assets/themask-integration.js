@@ -12,11 +12,11 @@ export function installTheMask({game, actions, config, api, socket, apiBase}) {
   };
   const renderer = createRenderer({debug:new URLSearchParams(location.search).get('debug') === '1',onPhotoFailure:player=>portraits.failed(player)});
   const stage = document.querySelector('#stage');
-  let latest = null, match = null, settings = {}, visible = true, logoVisible = true;
+  let latest = null, match = null, settings = {}, visible = true, logoVisible = true, teamsInverted = false;
   let bombPlayer = '', roundKey = '', loadVersion = 0, loadedMap = '';
   const rerender = () => {
     if (!latest) return;
-    const state = portraits.decorate(normalizeJTs(latest, match, settings, apiBase));
+    const state = portraits.decorate(normalizeJTs(latest, match, {...settings,invert_teams:teamsInverted}, apiBase));
     const key = `${latest.map?.name}:${latest.map?.round}`;
     if (key !== roundKey) { roundKey = key; bombPlayer = ''; }
     if (state.bomb_player && state.bomb !== 'defusing') bombPlayer = state.bomb_player;
@@ -51,6 +51,7 @@ export function installTheMask({game, actions, config, api, socket, apiBase}) {
   actions.on('showHud', () => show(true));
   actions.on('hideHud', () => show(false));
   actions.on('toggleTheMaskLogo', () => {logoVisible = !logoVisible; rerender();});
+  actions.on('swapTeams', () => {teamsInverted = !teamsInverted; rerender();});
   actions.on('themask_controls', action => actions.execute(action));
   config.onChange(apply);
   apply(config.data);

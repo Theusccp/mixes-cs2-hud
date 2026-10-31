@@ -23,6 +23,10 @@
           {
             "name": "toggleTheMaskLogo",
             "label": "Mostrar / ocultar logo (Alt+L)"
+          },
+          {
+            "name": "swapTeams",
+            "label": "Inverter times na HUD (Alt+T)"
           }
         ]
       }
