@@ -10,7 +10,7 @@ import zipfile
 
 ROOT = Path(__file__).resolve().parents[1]
 HUD = ROOT / 'themask'
-OUTPUT = ROOT / 'dist' / 'TheMask-HUD-v1.7.2.zip'
+OUTPUT = ROOT / 'dist' / 'TheMask-HUD-v1.8.zip'
 
 def main():
     for name in ['hud.json','panel.json','keybinds.json','index.html','thumb.png',

@@ -49,8 +49,9 @@ export function createRenderer(options = {}) {
       el = document.createElement('div'); el.className = 'pc'; el.dataset.id = String(p.id);
       el.innerHTML = '<div class="pc-box"></div><div class="pc-av hex"><img class="hex" alt=""></div><div class="pc-rk"></div>' +
         '<span class="pc-slot hex"></span><span class="pc-tag"></span>' +
-        '<div class="pc-row1"><span class="pc-name"></span><span class="pc-hp">' + SHIELD + '<b class="tabnum"></b></span></div>' +
-        '<div class="pc-row2"><span class="k tabnum"></span><span class="d tabnum"></span><span class="pc-money tabnum"></span></div>' +
+        '<div class="pc-row1"><span class="pc-name"></span></div>' +
+        '<div class="pc-vitals"><span class="pc-hp">' + SHIELD + '<b class="tabnum"></b></span><span class="pc-money tabnum"></span></div>' +
+        '<div class="pc-row2"><span class="k tabnum"></span><span class="d tabnum"></span></div>' +
         '<div class="pc-strip"><div class="fill"></div><div class="in"><span class="gun"></span><span class="nds"></span></div></div>' +
         '<div class="pc-dead"><b></b><span></span></div>';
     }

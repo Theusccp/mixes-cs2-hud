@@ -82,43 +82,44 @@ body { font-family: 'Oswald', sans-serif; color: #fff; -webkit-font-smoothing: a
 /* ── Cards dos jogadores ─────────────────────────── */
 .team { position: absolute; bottom: 18px; display: flex; gap: 5px; align-items: flex-end; }
 #tL { left: 18px; } #tR { right: 18px; }
-.pc { position: relative; width: 144px; height: 102px; }
+.pc { position: relative; width: 144px; height: 166px; }
 .pc-box { position: absolute; inset: 0; background: var(--bg); clip-path: polygon(0 0, calc(100% - 14px) 0, 100% 14px, 100% 100%, 0 100%); }
 #tR .pc-box { clip-path: polygon(14px 0, 100% 0, 100% 100%, 0 100%, 0 14px); }
 .pc-box::before { content: ''; position: absolute; left: 0; top: 0; right: 0; height: 2px; background: linear-gradient(90deg, var(--sc), transparent); }
 #tR .pc-box::before { background: linear-gradient(270deg, var(--sc), transparent); }
-.pc-av { position: absolute; left: 50%; top: -50px; width: 74px; height: 82px; transform: translateX(-50%); padding: 3px; z-index: 2; background: linear-gradient(160deg, var(--sc), var(--s2)); }
+.pc-av { position: absolute; left: 50%; top: -54px; width: 84px; height: 92px; transform: translateX(-50%); padding: 3px; z-index: 2; background: linear-gradient(160deg, var(--sc), var(--s2)); }
 .pc-av img { width: 100%; height: 100%; object-fit: cover; display: block; }
-.pc-slot { position: absolute; left: 6px; top: 6px; width: 22px; height: 24px; display: grid; place-items: center; background: var(--sc); color: #0b0c0f; font-size: 14px; font-weight: 700; z-index: 3; }
-.pc-tag { position: absolute; right: 6px; top: 6px; height: 18px; padding: 0 6px; display: none; place-items: center; font-family: 'Rajdhani', sans-serif; font-size: 12px; font-weight: 700; letter-spacing: 1px; color: #0b0c0f; z-index: 3; }
+.pc-slot { position: absolute; left: 6px; top: 6px; width: 26px; height: 28px; display: grid; place-items: center; background: var(--sc); color: #0b0c0f; font-size: 17px; font-weight: 700; z-index: 3; }
+.pc-tag { position: absolute; right: 6px; top: 6px; height: 20px; padding: 0 5px; display: none; place-items: center; font-family: 'Rajdhani', sans-serif; font-size: 14px; font-weight: 700; letter-spacing: .5px; color: #0b0c0f; z-index: 3; }
 .pc-tag.bomb { display: grid; background: var(--t); } .pc-tag.kit { display: grid; background: var(--ct); }
 #tR .pc-slot { left: auto; right: 6px; } #tR .pc-tag { right: auto; left: 6px; }
-.pc-rk { position: absolute; top: -46px; right: 8px; z-index: 3; display: flex; flex-direction: column; gap: 4px; }
+.pc-rk { position: absolute; top: -48px; right: 8px; z-index: 3; display: flex; flex-direction: column; gap: 4px; }
 #tR .pc-rk { right: auto; left: 8px; }
 .pc-rk i { width: 9px; height: 9px; background: var(--gold-hi); transform: rotate(45deg); box-shadow: 0 0 6px rgba(242,212,147,.8); }
-.pc-row1 { position: absolute; left: 8px; right: 8px; top: 36px; display: flex; align-items: center; gap: 6px; }
-.pc-name { flex: 1; min-width: 0; font-size: 18px; font-weight: 600; line-height: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.pc-hp { display: flex; align-items: center; gap: 3px; font-size: 21px; font-weight: 700; line-height: 1; }
-.pc-hp svg { width: 14px; height: 14px; color: var(--sc); }
-.pc-row2 { position: absolute; left: 8px; right: 8px; top: 58px; display: flex; align-items: center; gap: 8px; font-family: 'Rajdhani', sans-serif; font-size: 15px; font-weight: 700; }
+.pc-row1 { position: absolute; left: 9px; right: 9px; top: 40px; display: flex; align-items: center; height: 28px; }
+.pc-name { flex: 1; min-width: 0; font-size: 24px; font-weight: 700; line-height: 28px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.pc-vitals { position: absolute; left: 9px; right: 9px; top: 72px; height: 30px; display: flex; align-items: center; justify-content: space-between; gap: 4px; }
+.pc-hp { display: flex; align-items: center; gap: 4px; font-size: 30px; font-weight: 700; line-height: 30px; }
+.pc-hp svg { width: 16px; height: 18px; color: var(--sc); }
+.pc-row2 { position: absolute; left: 9px; right: 9px; top: 104px; height: 20px; display: flex; align-items: center; gap: 10px; font-family: 'Rajdhani', sans-serif; font-size: 18px; font-weight: 700; }
 .pc-row2 .k::before { content: 'K '; color: var(--sc); } .pc-row2 .d::before { content: 'D '; color: var(--sc); }
-.pc-money { margin-left: auto; color: var(--money); }
-.pc-strip { position: absolute; left: 0; right: 0; bottom: 0; height: 22px; background: rgba(255,255,255,.06); overflow: hidden; }
+.pc-money { margin-left: auto; color: var(--money); font: 700 20px/1 'Rajdhani',sans-serif; white-space: nowrap; }
+.pc-strip { position: absolute; left: 0; right: 0; bottom: 0; height: 40px; background: rgba(255,255,255,.06); overflow: hidden; }
 .pc-strip .fill { position: absolute; left: 0; top: 0; bottom: 0; background: linear-gradient(90deg, var(--s2), var(--sc)); transition: width .35s ease; }
 #tR .pc-strip .fill { left: auto; right: 0; background: linear-gradient(270deg, var(--s2), var(--sc)); }
 .pc-strip .fill.low { background: linear-gradient(90deg, #7A1712, var(--red)); }
-.pc-strip .in { position: absolute; inset: 0; padding: 0 8px; display: flex; align-items: center; gap: 5px; font-family: 'Rajdhani', sans-serif; font-size: 13px; font-weight: 700; letter-spacing: .5px; text-transform: uppercase; text-shadow: 0 1px 2px rgba(0,0,0,.7); }
-.pc-strip .gun { flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.pc-strip .nds { display: flex; align-items: center; gap: 2px; flex-shrink: 0; }
-.nd { display: grid; place-items: center; width: 16px; height: 19px; background: rgba(8,13,19,.92); flex-shrink: 0; clip-path: polygon(50% 0,100% 25%,100% 75%,50% 100%,0 75%,0 25%); }
-.nd svg { width: 13px; height: 15px; fill: none; stroke: currentColor; stroke-width: 1.9; stroke-linejoin: round; stroke-linecap: round; }
+.pc-strip .in { position: absolute; inset: 0; padding: 0 8px; display: grid; grid-template-rows: 20px 20px; align-items: center; font-family: 'Rajdhani', sans-serif; font-size: 18px; font-weight: 700; letter-spacing: .5px; text-transform: uppercase; text-shadow: 0 1px 2px rgba(0,0,0,.85); }
+.pc-strip .gun { min-width: 0; line-height: 20px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.pc-strip .nds { display: flex; align-items: center; justify-self: end; gap: 3px; }
+.nd { display: grid; place-items: center; width: 18px; height: 20px; background: rgba(8,13,19,.92); flex-shrink: 0; clip-path: polygon(50% 0,100% 25%,100% 75%,50% 100%,0 75%,0 25%); }
+.nd svg { width: 15px; height: 17px; fill: none; stroke: currentColor; stroke-width: 1.9; stroke-linejoin: round; stroke-linecap: round; }
 .nd.he { color: #FF8D82; } .nd.smoke { color: #E5EBF1; } .nd.flash { color: #FFF1A6; } .nd.fire { color: #FFB05B; } .nd.decoy { color: #A6D9ED; }
 .pc-dead { position: absolute; left: 34px; right: 8px; top: 9px; display: none; flex-direction: column; gap: 3px; }
 #tR .pc-dead { left: 8px; right: 34px; }
-.pc-dead b { font-size: 18px; font-weight: 600; line-height: 1.05; color: rgba(255,255,255,.75); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.pc-dead span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-family: 'Rajdhani', sans-serif; font-size: 14px; font-weight: 700; line-height: 1.15; color: rgba(255,255,255,.55); }
-.pc.dead { height: 66px; }
-.pc.dead .pc-av, .pc.dead .pc-row1, .pc.dead .pc-row2, .pc.dead .pc-strip, .pc.dead .pc-tag, .pc.dead .pc-rk { display: none; }
+.pc-dead b { font-size: 24px; font-weight: 700; line-height: 1.1; color: rgba(255,255,255,.85); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.pc-dead span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-family: 'Rajdhani', sans-serif; font-size: 18px; font-weight: 700; line-height: 1.2; color: rgba(255,255,255,.7); }
+.pc.dead { height: 88px; }
+.pc.dead .pc-av, .pc.dead .pc-row1, .pc.dead .pc-vitals, .pc.dead .pc-row2, .pc.dead .pc-strip, .pc.dead .pc-tag, .pc.dead .pc-rk { display: none; }
 .pc.dead .pc-dead { display: flex; }
 .pc.dead .pc-box { background: rgba(9,10,12,.72); }
 .pc.dead .pc-box::before { background: linear-gradient(90deg, rgba(255,255,255,.25), transparent); }
@@ -127,21 +128,21 @@ body { font-family: 'Oswald', sans-serif; color: #fff; -webkit-font-smoothing: a
 .pc.obs .pc-box::after { content: ''; position: absolute; inset: 0; box-shadow: inset 0 0 0 2px var(--gold-hi); }
 
 /* ── Jogador assistido ───────────────────────────── */
-#obs { position: absolute; bottom: 18px; left: 50%; transform: translateX(-50%); width: 384px; height: 54px; }
+#obs { position: absolute; bottom: 18px; left: 50%; transform: translateX(-50%); width: 384px; height: 82px; }
 #obs .box { position: absolute; inset: 0; background: var(--bg-2); clip-path: polygon(14px 0, calc(100% - 14px) 0, 100% 14px, 100% 100%, 0 100%, 0 14px); }
 #obs .hpline { position: absolute; left: 0; bottom: 0; height: 4px; background: linear-gradient(90deg, var(--s2), var(--sc)); transition: width .3s ease; }
-.ob-av { position: absolute; left: 50%; bottom: 50px; width: 112px; height: 124px; transform: translateX(-50%); padding: 4px; background: linear-gradient(160deg, var(--gold-hi), var(--sc)); }
+.ob-av { position: absolute; left: 50%; bottom: 80px; width: 128px; height: 142px; transform: translateX(-50%); padding: 4px; background: linear-gradient(160deg, var(--gold-hi), var(--sc)); }
 .ob-av img { width: 100%; height: 100%; object-fit: cover; display: block; }
-.ob-l, .ob-r { position: absolute; top: 0; bottom: 4px; display: flex; align-items: center; gap: 6px; font-size: 24px; font-weight: 700; }
+.ob-l, .ob-r { position: absolute; top: 42px; bottom: 4px; display: flex; align-items: center; gap: 6px; font-size: 30px; font-weight: 700; }
 .ob-l { left: 16px; } .ob-r { right: 16px; }
-.ob-l svg { width: 18px; height: 18px; color: var(--sc); }
-.ob-r small { font-size: 15px; color: var(--dim); font-weight: 600; }
-.ob-name { position: absolute; left: 50%; top: 0; bottom: 4px; transform: translateX(-50%); display: flex; align-items: center; font-size: 22px; font-weight: 600; max-width: 170px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.ob-gun { position: absolute; right: 0; bottom: 60px; max-width: 120px; padding: 3px 10px 3px 14px; background: var(--bg); font-family: 'Rajdhani', sans-serif; font-size: 14px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase;
+.ob-l svg { width: 21px; height: 22px; color: var(--sc); }
+.ob-r small { font-size: 20px; color: var(--dim); font-weight: 600; }
+.ob-name { position: absolute; left: 50%; top: 7px; height: 34px; transform: translateX(-50%); display: block; text-align: center; font-size: 28px; line-height: 34px; font-weight: 700; max-width: 344px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ob-gun { position: absolute; right: 0; bottom: 94px; max-width: 110px; padding: 4px 9px 4px 12px; background: var(--bg); font-family: 'Rajdhani', sans-serif; font-size: 18px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase;
   clip-path: polygon(8px 0, 100% 0, 100% 100%, 0 100%); }
-.ob-stats { position: absolute; left: 0; bottom: 60px; display: grid; grid-template-columns: repeat(2, auto); gap: 4px; justify-content: start; }
-.ob-stats span { padding: 3px 9px; background: var(--bg); font-family: 'Rajdhani', sans-serif; font-size: 14px; font-weight: 700; letter-spacing: .5px; }
-.ob-stats span b { font-family: 'Oswald', sans-serif; font-size: 16px; margin-right: 3px; color: var(--gold-hi); }
+.ob-stats { position: absolute; left: 0; bottom: 94px; display: grid; grid-template-columns: repeat(2, 56px); gap: 4px; justify-content: start; }
+.ob-stats span { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 4px 2px; background: var(--bg); font-family: 'Rajdhani', sans-serif; font-size: 14px; line-height: 16px; font-weight: 700; letter-spacing: .4px; }
+.ob-stats span b { font-family: 'Oswald', sans-serif; font-size: 24px; line-height: 26px; margin-right: 0; color: var(--gold-hi); }
 
 #dbg { position: fixed; left: 10px; bottom: 10px; padding: 6px 10px; font: 600 12px 'Rajdhani', sans-serif; color: #fff; background: rgba(0,0,0,.65); display: none; }
 

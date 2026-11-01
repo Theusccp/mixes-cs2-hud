@@ -5,12 +5,14 @@ Variante independente da MixES, baseada na referência visual fornecida pelo usu
 ## Instalar no JTs e OBS
 
 1. Gere o pacote em Windows com `py -3 scripts/package-themask.py` ou, em Linux/macOS, com `python3 scripts/package-themask.py`.
-2. No JTs, importe `dist/TheMask-HUD-v1.6.zip`, sem descompactar.
+2. No JTs, importe `dist/TheMask-HUD-v1.8.zip`, sem descompactar.
 3. Inicie **The Mask Cup — Broadcast**. Cadastre times, logos, jogadores e fotos no gerenciador como na Echo/MixES.
 4. Copie a URL para uma fonte Navegador do OBS, em **1920 × 1080**.
 5. Abra o painel da HUD no JTs para configurar nome do campeonato, cores, melhor de, tamanho e encaixe das fotos.
 
 Alt+O alterna a HUD, Alt+L alterna a logo, Alt+T inverte os times na HUD e Alt+F continua sendo o atalho de atualização do JTs. Há botões Mostrar/Ocultar e Inverter times no painel. A inversão troca placar, nomes, logos, jogadores e economia entre esquerda/direita, mantendo as cores de CT/TR. Pressione novamente para voltar. A escolha vale enquanto a HUD estiver aberta e não altera os times no servidor.
+
+A versão 1.8 amplia a faixa dos jogadores para leitura na transmissão: nomes de 18 para 24 px, vida de 21 para 30 px, dinheiro de 15 para 20 px e armas de 13 para 18 px. O nome usa uma linha inteira e o rodapé separa arma e granadas. O cartão central também tem nome e números maiores. A largura total permanece dentro da tela em 1920 × 1080 e acompanha a escala da fonte de navegador.
 
 ## Prévia local
 
