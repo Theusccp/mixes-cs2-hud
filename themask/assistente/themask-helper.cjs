@@ -1,0 +1,106 @@
+/* Local companion: public Steam portraits and a separate Windows overlay focus fix. */
+const http=require('node:http');
+const fs=require('node:fs');
+const path=require('node:path');
+const {spawn}=require('node:child_process');
+const {createAutoSpec}=require('./auto-director.cjs');
+
+const validID=id=>/^765\d{14}$/.test(id);
+function avatarFromXML(xml){
+  const raw=String(xml).match(/<avatarFull>\s*(?:<!\[CDATA\[)?(https:\/\/[^<\]\s]+)(?:\]\]>)?\s*<\/avatarFull>/i)?.[1];
+  if(!raw)return '';
+  try{const url=new URL(raw.replace(/&amp;/g,'&'));
+    return url.protocol==='https:'&&/(^|\.)steamstatic\.com$|(^|\.)steamcdn-a\.akamaihd\.net$|(^|\.)steamusercontent\.com$/i.test(url.hostname)?url.href:'';
+  }catch{return '';}
+}
+function createAvatarStore({fetchText,cachePath,now=()=>Date.now()}={}){
+  const pending=new Map(),cache=new Map();
+  if(cachePath)try{for(const [id,entry] of Object.entries(JSON.parse(fs.readFileSync(cachePath,'utf8'))))
+    if(validID(id)&&entry.steam&&avatarFromXML('<avatarFull>'+entry.steam+'</avatarFull>'))cache.set(id,entry);
+  }catch{}
+  const load=fetchText||async function(url){
+    const response=await fetch(url,{signal:AbortSignal.timeout(8000),headers:{'User-Agent':'TheMask-HUD/1.5 (public Steam avatar lookup)'}});
+    if(!response.ok)throw Error('Steam unavailable');
+    const xml=await response.text();if(xml.length>524288)throw Error('Profile too large');return xml;
+  };
+  return async function get(id){
+    if(!validID(id))return '';
+    const saved=cache.get(id);if(saved&&saved.expires>now())return saved.steam;
+    if(pending.has(id))return pending.get(id);
+    const task=(async()=>{
+      let steam='';try{steam=avatarFromXML(await load('https://steamcommunity.com/profiles/'+id+'/?xml=1'));}catch{}
+      cache.set(id,{steam,expires:now()+(steam?6*60*60*1000:60000)});
+      if(steam&&cachePath)try{fs.mkdirSync(path.dirname(cachePath),{recursive:true});fs.writeFileSync(cachePath,JSON.stringify(Object.fromEntries(cache)));}catch{}
+      return steam;
+    })();
+    pending.set(id,task);
+    try{return await task;}finally{pending.delete(id);}
+  };
+}
+function createHelper({getAvatar=createAvatarStore(),port=23416,autoSpec=createAutoSpec(),onManual=()=>{}}={}){
+  const server=http.createServer(async(req,res)=>{
+    const origin=req.headers.origin;
+    const originOK=!origin||/^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(origin);
+    const hostOK=new RegExp('^(127\\.0\\.0\\.1|localhost):'+(server.address()?.port||port)+'$').test(req.headers.host||'');
+    if(!originOK||!hostOK){res.writeHead(403);return res.end();}
+    if(origin)res.setHeader('Access-Control-Allow-Origin',origin);
+    res.setHeader('Vary','Origin');res.setHeader('Access-Control-Allow-Private-Network','true');
+    res.setHeader('Access-Control-Allow-Methods','GET, POST, OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers','Content-Type');
+    res.setHeader('Content-Type','application/json; charset=utf-8');res.setHeader('Cache-Control','no-store');
+    if(req.method==='OPTIONS'){res.writeHead(204);return res.end();}
+    const pathname=new URL(req.url,'http://localhost').pathname;
+    if(req.method==='POST'&&['/director/frame','/director/control'].includes(pathname)){
+      if(!String(req.headers['content-type']||'').startsWith('application/json')){res.writeHead(415);return res.end('{}');}
+      try{
+        let body='';for await(const chunk of req){body+=chunk;if(body.length>65536)throw Error('Too large');}
+        const frame=JSON.parse(body),isControl=pathname==='/director/control';
+        const status=isControl?autoSpec.control(frame.mode):await autoSpec.frame(frame);
+        if((isControl||frame.control===true)&&frame.mode==='off'&&!status.enabled)try{onManual();}catch{}
+        return res.end(JSON.stringify(status));
+      }catch{res.writeHead(400);return res.end('{}');}
+    }
+    if(req.method!=='GET'){res.writeHead(405);return res.end('{}');}
+    if(pathname==='/director'||pathname==='/'){
+      res.setHeader('Content-Type','text/html; charset=utf-8');
+      return res.end(fs.readFileSync(path.join(__dirname,'autospec-panel.html'),'utf8'));
+    }
+    if(pathname==='/director/status')return res.end(JSON.stringify(autoSpec.status()));
+    if(pathname==='/health')return res.end(JSON.stringify({service:'themask-helper',version:'1.6.3',autospec:'0.4'}));
+    const id=pathname.match(/^\/avatar\/(765\d{14})$/)?.[1];
+    if(!id){res.writeHead(404);return res.end('{}');}
+    try{res.end(JSON.stringify({steam:await getAvatar(id)}));}
+    catch{res.writeHead(502);res.end('{"steam":""}');}
+  });
+  return server;
+}
+if(require.main===module){
+  const getAvatar=createAvatarStore({cachePath:path.join(__dirname,'cache','steam-avatars.json')});
+  const keyboardMode=process.env.THEMASK_AUTO_TRANSPORT==='keyboard';
+  let keyboard=null,bridge=null;
+  if(keyboardMode){
+    const {createKeyboardBridge,createKeyboardTransport}=require('./keyboard-transport.cjs');
+    bridge=createKeyboardBridge();
+    keyboard=createKeyboardTransport({directory:process.env.THEMASK_CS2_CFG_DIR,request:action=>bridge.request(action)});
+  }
+  const autoSpec=createAutoSpec({...(keyboard?{send:keyboard.send}:{}),transport:keyboardMode?'keyboard':'netcon'});
+  const server=createHelper({getAvatar,autoSpec,onManual:()=>keyboard?.clear()});
+  let mouse;
+  server.on('error',error=>{console.error(error.code==='EADDRINUSE'?'O assistente ja esta aberto (porta 23416).':error.message);bridge?.close();process.exitCode=1;});
+  const start=()=>server.listen(23416,'127.0.0.1',()=>{
+    console.log('TheMask / AutoSpec 0.4: fotos Steam e diretor disponiveis. Deixe esta janela aberta.');
+    console.log(keyboardMode?'Transporte: TECLADO F10 / CS2 em foco. Sem Netcon e sem -tools.':'Transporte: Netcon legado / porta 2020.');
+    console.log('Echo teste: Alt+Shift+A automatico, Alt+Shift+M manual, Alt+Shift+D simulacao.');
+    console.log('CONTROLE DIRETO: http://127.0.0.1:23416/director');
+    console.log('Abra o endereco e clique Automatico. O painel informa se os dados da HUD chegam.');
+    console.log('Apos iniciar a HUD, use Alt+Tab e selecione Counter-Strike 2 uma vez.');
+    if(process.platform==='win32'){
+      mouse=spawn('powershell.exe',['-NoProfile','-ExecutionPolicy','Bypass','-File',path.join(__dirname,'TheMask-Mouse.ps1')],{stdio:'inherit',windowsHide:true});
+      mouse.on('error',()=>console.log('Nao foi possivel iniciar o ajuste da janela. Use a HUD apenas no OBS.'));
+    }
+  });
+  (bridge?.ready||Promise.resolve()).then(start).catch(error=>{console.error(error.message);bridge?.close();process.exitCode=1;});
+  const stop=()=>{try{keyboard?.clear();}catch{}bridge?.close();mouse?.kill();server.close();process.exit();};
+  process.on('SIGINT',stop);process.on('SIGTERM',stop);process.on('SIGHUP',stop);process.on('exit',()=>mouse?.kill());
+}
+module.exports={avatarFromXML,createAvatarStore,createHelper};

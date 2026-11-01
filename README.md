@@ -1,5 +1,7 @@
 # MixES — HUD CS2 em português
 
+Também inclui a variante **[The Mask Cup — Broadcast](docs/THEMASK.md)**, com o layout compacto azul/dourado e cards hexagonais. Para gerar seu ZIP de importação, use `python3 scripts/package-themask.py` ou `py -3 scripts/package-themask.py` no Windows. A HUD MixES original continua em `hud/`; a TheMask fica em `themask/`.
+
 HUD para transmissão de CS2 no JTs HUD Manager e OBS, baseada no Echo 1.0.2 de cshuds.com. Esta é a versão `1.0.2-mixes.3`: textos em português, cores MixES, logo menor e mais alta, atalhos de visibilidade e controle de tamanho das fotos dos jogadores.
 
 ## Instalar e usar

@@ -1,0 +1,28 @@
+AUTOSPEC 0.2 — ASSISTENTE PARA CS2 NORMAL NO WINDOWS
+
+Este ZIP pequeno nao e para importar no JTs. Mantenha a Echo AutoSpec
+TESTE 0.1 ou 0.2 ja importada. Extraia este ZIP em uma pasta separada.
+
+1. Remova -tools das opcoes de inicializacao. Abra o CS2 normal e o JTs.
+2. Feche a janela do assistente antigo.
+3. Execute assistente/INICIAR-AUTOSPEC-SEM-TOOLS.cmd.
+4. No console do CS2, execute:
+   bind F10 "exec themask_autospec_bridge"
+   F10 fica reservado para esta funcao; anote antes sua funcao anterior.
+5. Feche o console e entre como espectador. Mantenha o CS2 em foco.
+6. Alt+Shift+D: simular; Alt+Shift+A: automatico; Alt+Shift+M: manual.
+
+Teste primeiro F10 manualmente com o console fechado. A ponte grava
+apenas themask_autospec_bridge.cfg e envia F10 quando o CS2 esta em foco.
+O alvo deve ser confirmado pelo GSI; sem confirmacao, os cortes pausam.
+Ao dar Alt+Tab ou segurar teclas modificadoras, aguarda sem enviar atalhos.
+Para controlar o OBS nesse modo, use atalhos globais mantendo o CS2
+selecionado. Este modo nao controla o jogo em segundo plano.
+Nao modifica memoria/DLLs do jogo e nao altera a protecao do servidor.
+A tecla pode ser bloqueada pelo Windows; o uso real ainda precisa de teste.
+
+Fotos Steam e ajuste da janela continuam incluidos. O cache dos avatares
+fica na pasta cache (seis horas). Apenas um assistente usa 127.0.0.1:23416.
+O caminho da CFG e detectado pelo cs2.exe em execucao. Abra o jogo antes.
+INICIAR-THEMASK.cmd e o launcher legado Netcon; para este teste escolha
+o arquivo SEM-TOOLS, cujo terminal indica Transporte: TECLADO F10.

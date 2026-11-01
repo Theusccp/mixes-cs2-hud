@@ -1,0 +1,5 @@
+[
+  { "bind": "Alt+O", "action": "toggleActive" },
+  { "bind": "Alt+L", "action": "toggleTheMaskLogo" },
+  { "bind": "Alt+T", "action": "swapTeams" }
+]

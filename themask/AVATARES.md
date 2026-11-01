@@ -1,0 +1,23 @@
+# Avatares ilustrados CT / TR
+
+Os avatares padrão foram criados com geração de imagem integrada, usando as duas artes enviadas como inspiração de estilo. O painel permite escolher entre fotos cadastradas, fotos cadastradas com Steam ou somente os desenhos. Nos modos com foto, os avatares ilustrados aparecem quando não há retrato utilizável.
+
+## Escolha manual das fotos
+
+No JTs, abra **Panel → TheMask — Personalização → Fotos dos jogadores — escolha manual**. Selecione uma opção e salve:
+
+- **Somente fotos cadastradas (padrão):** mantém fotos enviadas e usa os avatares ilustrados quando faltar foto. Não consulta Steam.
+- **Fotos cadastradas + Steam quando faltar foto:** habilita a consulta Steam, mantendo fotos enviadas com prioridade. Deixe o assistente local aberto.
+- **Somente avatares ilustrados CT/TR:** mostra os desenhos em todos os jogadores, inclusive no ranking e no MVP.
+
+A seleção é aplicada imediatamente ao receber a configuração salva, inclusive sobre fotos Steam já carregadas. O modo padrão mantém a busca Steam desligada.
+
+Arquivos finais: `assets/themask-agent-ct-v2.webp` e `assets/themask-agent-tr-v2.webp`. Ambos têm 512 × 512 pixels e transparência. Os retratos foram exportados para WebP a partir das artes geradas, sem recortar a cabeça. O enquadramento da HUD usa `contain` e tamanho de 100%, sem o zoom dos modelos antigos.
+
+## Prompt CT
+
+Use case: stylized-concept. Create ONE finished transparent PNG asset for a Counter-Strike broadcast HUD, a default CT player portrait. The attached first illustration is visual inspiration for a blue-gray gas-mask CT; the second illustration is inspiration for friendly, slightly exaggerated cartoon proportions. They are STYLE REFERENCES, not images to duplicate. Draw a polished original esports mascot bust: counter-terrorist wearing blue-gray helmet, black gas mask with two glossy dark lenses and a compact round respirator, blue tactical shoulders/vest. Strong clean charcoal outlines, controlled flat cel shading, subtle cyan highlights, clear readable silhouette even at 64 pixels. Mildly stylized proportions, tasteful and cohesive, not photorealistic or excessively cute. Square 1024x1024 composition, head and shoulders facing almost front with a slight three-quarter turn. IMPORTANT FRAMING: entire helmet/head/mask and both shoulders comfortably inside canvas; helmet top around 12% from top, widest head around central 55% width, shoulders around 80% width at 70% height, chest extends to bottom center. Designed to fit within a point-up regular HEXAGON crop without cutting head, filter or ears. Leave breathing room around the head. No hexagon, frame, badge, circle, background, environment, lettering, numbers, logos, watermark, weapons or hands. Truly transparent alpha outside the illustrated bust, clean edges, no shadow on an invisible ground.
+
+## Prompt TR
+
+Use case: stylized-concept. Create ONE finished transparent PNG asset, the matching T-side default player portrait for a Counter-Strike broadcast HUD. Input image 1 is the APPROVED CT portrait in the same set: match its premium illustrated esports mascot style, clean thick outlines, flat cel-shaded lighting, detail density, bust framing and scale. Input image 2 is inspiration only for Counter-Strike T character wardrobe. Draw one original fictional T-side agent, head and shoulders, wearing a charcoal balaclava with full top of head visible, black sunglasses with warm gold reflections, an olive/khaki jacket and muted tan scarf loosely covering lower face. Friendly but composed tactical cartoon character, not a skull, not a realistic person; distinct readable eyes/glasses/scarf silhouette. Subtle warm amber/gold rim accents pair with the gold team color. No weapons, no hands. Square 1280x1280 if possible, facing nearly front with slight three-quarter turn toward the opposite side of CT. Entire head, face covering and shoulders visible. Keep the head comfortably centered within the inner 60% canvas width; top of balaclava about 10% from top; shoulders occupy about 80% width around 72% canvas height, chest ends near 94% height. Intended for a point-up hexagon mask, so no important facial details near corners. Transparent alpha outside the bust, no ground shadow, no environment, no circle, no hexagon, no frame, no text, logos or watermark. This is a matching single HUD asset, not a contact sheet.

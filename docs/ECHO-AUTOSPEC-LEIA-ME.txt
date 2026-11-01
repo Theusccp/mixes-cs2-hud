@@ -1,0 +1,86 @@
+ECHO / THEMASK — ASSISTENTE AUTOSPEC EXPERIMENTAL 0.4
+
+PRIMEIRO TESTE NO WINDOWS NORMAL
+1. Remova -tools das opcoes de inicializacao e reinicie o CS2 normal.
+   O modo teclado nao precisa de -netconport e nao tenta mudar regras VAC.
+2. Mantenha a Echo AutoSpec de teste instalada e aberta no JTs (0.1, 0.2 ou 0.3).
+3. Extraia o assistente atualizado em uma pasta sua. Abra CS2 e JTs.
+   Feche o assistente anterior e execute assistente/INICIAR-AUTOSPEC-SEM-TOOLS.cmd.
+4. No console do CS2 execute uma vez:
+   bind F10 "exec themask_autospec_bridge"
+   F10 fica reservado. Se tinha outra funcao nessa tecla, anote-a antes.
+5. Abra http://127.0.0.1:23416/director ou ABRIR-PAINEL-AUTOSPEC.cmd.
+   Clique Automatico. O painel deve mostrar dados recentes da HUD.
+   Se nao recebe dados, abra TheMask - Echo AutoSpec TESTE no JTs;
+   a TheMask comum nao envia dados para o diretor.
+6. Como espectador, feche o console e mantenha o CS2 em foco.
+   Para parar, clique Manual / parar no painel do assistente.
+   Os atalhos da HUD continuam disponiveis: Alt+Shift+D para simular,
+   Alt+Shift+A para ligar/desligar e Alt+Shift+M para manual.
+   Uma acao explicita da HUD retoma o controle; fontes OBS sem nova
+   acao nao desfazem o modo selecionado no painel do assistente.
+
+PONTE POR TECLADO
+O assistente detecta a pasta game/csgo/cfg pelo cs2.exe em execucao,
+escreve somente themask_autospec_bridge.cfg e envia F10 para executar.
+O conteudo aceito e restrito aos comandos de espectador gerados pelo diretor.
+Nao substitui configs existentes que nao tenham a assinatura deste projeto.
+Ao dar Alt+Tab ou segurar Alt/Shift/Ctrl/Win, aguarda sem enviar atalhos.
+Volta a tentar quando o CS2 estiver em foco. Para operar o OBS nesse modo,
+use atalhos globais mantendo o CS2 selecionado. Nao controla o jogo em fundo.
+No modo manual/ao encerrar o assistente, tenta neutralizar o arquivo gerado.
+Nao modifica memoria, DLLs ou o executavel do jogo. Nao ha garantia geral
+sobre politicas de plataformas externas; o uso aqui e apenas espectador.
+O Windows pode bloquear a tecla se o jogo estiver em um nivel de privilegio
+superior ao assistente. O envio de tecla precisa de teste no seu Windows.
+
+NETCON LEGADO
+INICIAR-THEMASK.cmd continua oferecendo o transporte Netcon anterior.
+No Windows, o workaround documentado do Netcon usa Workshop Tools/-tools;
+esse modo pode impedir acesso a servidores protegidos e nao e a orientacao
+para a transmissao ao vivo deste usuario. Nao desative a protecao do servidor.
+
+COMO ESCOLHE
+Usa posicoes, direcoes, proximidade de adversarios, dano recente,
+abates, municao quando recebida, clutch, plantio e desarme.
+Mantem a camera por pelo menos 3,5 segundos em cortes comuns. Desarme,
+plantio e morte do assistido podem antecipar o corte, com limite de 1 s.
+Troca manual de um assistido vivo pausa o diretor por dez segundos.
+O alvo deve aparecer no GSI em ate cinco segundos. Um alvo que morre ou
+desconecta antes da confirmacao e descartado sem bloquear o diretor.
+Uma falha isolada aguarda 1,5 s e procura outro alvo; o alvo que falhou
+fica fora da selecao por 15 s. Durante compra/pausa nao envia comandos;
+retoma na fase live. Confirmacao bem-sucedida zera o contador de falhas.
+Somente tres falhas consecutivas pausam o automatico ate reativar.
+O diagnostico inclui unconfirmed_cuts, pending_target e last_unconfirmed_target.
+As fontes separadas do OBS nao devem reativar um diretor ja parado.
+
+LIMITES IMPORTANTES DO TESTE
+Nao e uma IA treinada e nao preve o futuro nem conhece paredes do mapa.
+Distancia/direcao indicam possivel confronto, sem garantir visibilidade.
+Pode perder duelos simultaneos. Teste antes da transmissao oficial.
+Nao utiliza HLAE, DLLs ou leitura de memoria; usa GSI e console local.
+Nao corta se a conta provider.steamid for um jogador CT/TR na partida.
+Com provider.steamid ausente ou dados atrasados, aguarda sem executar.
+
+JOGADORES E SLOTS
+Por padrao usa nomes completos do jogo e ignora nomes ambiguos, com
+comandos especiais ou iniciados por numero, devido ao spec_player.
+Se voce NAO usa remapeamento no Spectator Binds do JTs, pode marcar
+Usar slots nativos no Panel para abranger esses jogadores tambem.
+Se usa remapeamento, mantenha desmarcado e confira os nomes no teste.
+
+VISUAL
+Retratos personalizados tem prioridade; ausencia tenta Steam pelo assistente.
+Sem foto utilizavel, aparecem agentes CT/TR. O jogador morto continua com
+o cartao compacto. Ranking e destaque foram ampliados para melhor leitura.
+A Echo/MixES instalada anteriormente e a TheMask estavel sao variantes
+independentes: este pacote nao sobrescreve essas instalacoes.
+
+DIAGNOSTICO
+http://127.0.0.1:23416/director permite controlar e copiar o diagnostico.
+http://127.0.0.1:23416/director/status mostra o motivo atual no navegador.
+Se usar modo teclado, confira F10 manualmente e feche o console antes do automatico.
+Se os cortes nao forem confirmados, confira a opcao de slots e os nomes.
+O teste automatizado usa TCP/GSI simulados. O uso real no Windows/CS2
+precisa de verificacao no seu computador antes de uma live.

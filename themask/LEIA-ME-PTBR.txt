@@ -1,0 +1,87 @@
+THE MASK CUP — BROADCAST HUD 1.6.0
+
+INSTALAÇÃO NO JTs
+1. Importe TheMask-HUD-v1.6.zip em HUDs > Import HUD, sem descompactar.
+2. Inicie The Mask Cup — Broadcast.
+3. Copie a URL para uma fonte Navegador do OBS, em 1920 x 1080.
+4. Cadastre jogadores, fotos e times no JTs. Os dados vêm da mesma integração GSI usada pela Echo.
+5. Abra Panel para nome do campeonato, cores, fotos e visibilidade.
+
+ATALHOS
+Alt+O: mostrar/ocultar a HUD.
+Alt+L: mostrar/ocultar a logo do evento.
+Alt+F: atualização global do JTs.
+
+PRÉVIA
+Abra a URL da HUD com &demo=1 (ou ?demo=1 se não houver parâmetros).
+A demonstração usa arquivos locais e não faz conexão com o JTs.
+Os botões no centro alternam os estados. Não use demo=1 na transmissão real.
+
+ESTATÍSTICAS
+Na compra, nas pausas e no fim do mapa, o ranking mostra abates, mortes e K/D.
+O ranking ocupa o lugar do radar; durante a rodada o radar volta.
+O destaque mostra foto, abates e dano da última rodada encerrada.
+Critério da base Echo: mais abates, com dano como desempate.
+A economia mostra dinheiro total das equipes e bônus de derrota durante
+compra/pausa. O bônus usa a escala padrão da Echo, de 1400 até 3400.
+Cada painel pode ser ocultado separadamente na personalização do JTs.
+O destaque só aparece depois que uma rodada com dados de abates/dano terminar.
+Exibição mínima de 8 segundos, preservando dados antes do reset da rodada.
+No fim de mapa, permanece mesmo se o servidor desconectar.
+
+ANIMAÇÕES
+Ranking, economia e destaque entram e saem suavemente nas mudanças de fase.
+O radar volta depois do recolhimento do ranking; as linhas entram em sequência.
+A preferência do sistema por movimento reduzido desativa os efeitos.
+
+ASSISTENTE PARA STEAM E MOUSE
+Além de importar o ZIP, extraia uma CÓPIA dele em uma pasta sua.
+Com o JTs aberto, execute assistente/INICIAR-THEMASK.cmd dessa cópia e
+deixe a janela aberta. O assistente usa Node instalado ou o próprio JTs.
+Ele busca a foto Steam quando não existe foto salva (ou a foto salva falha)
+e ajusta a janela da HUD no Windows para não receber ativação/cliques.
+Depois de iniciar a HUD, use Alt+Tab e selecione Counter-Strike 2 uma vez.
+Mais detalhes em assistente/LEIA-ME.txt. O ajuste nativo requer teste no Windows.
+
+FOTOS
+O padrão preenche o hexágono. Para retratos PNG de corpo, marque
+Encaixar foto inteira e ajuste o tamanho entre 70 e 160.
+Fotos ausentes usam agentes CT/TR quando a foto Steam também falta.
+Times sem logo continuam mostrando sua sigla.
+Ranking e destaque foram ampliados para melhorar a leitura.
+Avatares da Steam usam a versão full quando disponível. Fotos personalizadas
+mantêm a URL original, sem filtro de nitidez ou compressão pela HUD.
+Para retrato, use o PNG original em 800 x 834 ou maior na proporção 400:417.
+A HUD não recupera detalhes que já foram perdidos no arquivo cadastrado.
+
+MOUSE E FOCO
+O CSS desativa interação/cursor na página; o assistente opcional ajusta a
+janela externa do JTs. A captura do cursor continua sendo do próprio CS2.
+Para troca por teclado, copie cfg/themaskobserver.cfg para game/csgo/cfg
+e execute exec themaskobserver: F7 anterior, F8 próximo, F9 modo de câmera.
+Esse arquivo redefine F7/F8/F9 e habilita 1-0 para os slots nativos.
+Se usa Spectator Binds personalizados do JTs, reaplique-os depois.
+Confira a fonte do OBS em 1920 x 1080 para evitar cortes ou escala extra.
+
+INTERFACE DO CS2
+O pacote usa o killfeed nativo do CS2 e inclui radar próprio TheMask.
+O radar mostra jogadores, direção, mortos, C4 e fumaças a partir do GSI.
+Radar transparente, sem painel escuro ou moldura.
+Inventário com ícones de HE, flash, smoke, molotov/incendiária e decoy
+dentro de hexágonos, com as quantidades de granadas do jogador.
+Tamanho padrão: 380 px. Ajustável de 240 a 480 no painel.
+Mapas: Mirage, Dust2, Inferno, Nuke, Train, Overpass, Ancient, Anubis,
+Vertigo e Cache, conforme os assets e calibrações existentes na base Echo.
+Nomes padrão dos lados aparecem como CT / TR.
+Use cfg/themaskon.cfg para o modo compacto, sem radar nativo.
+Use cfg/themaskoff.cfg para restaurar a interface padrão.
+Esses dois arquivos devem ser copiados para game/csgo/cfg do cliente CS2.
+
+VALIDAÇÃO
+Consulte a documentação do repositório para o resultado das verificações.
+A integração deve ser conferida no seu JTs/CS2 em modo espectador antes da live.
+
+CRÉDITOS
+Visual: referência The Mask Cup fornecida pelo usuário.
+Integração GSI e Socket.IO: base Echo 1.0.2, de cshuds.com.
+Logo e fontes incluídas localmente. Tipografia: Oswald e Rajdhani (Google Fonts).
